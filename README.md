@@ -157,10 +157,13 @@ Para subir no GitHub voce seguirá esses seguintes passos:
 
 Para clonar o repositorio e trabalhar com o modelo mais recente, voce apenas vai escrever
 
-git clone https://github.com/Eduardo-Bucci/Geladeira_Inteligente.git
+- git clone https://github.com/Eduardo-Bucci/Geladeira_Inteligente.git -
 
-Se voce ja clonou o repositório e alguem mudou algo nele, você so precisa digitar
+Se voce ja clonou o repositório e alguem mudou algo nele, você so precisa digitar:
 
-git pull (se for alguma branch específica, voce vai escrever o nome dela depois desse comando)
+- git pull - (se for alguma branch específica, voce vai escrever o nome dela depois desse comando)
+
+Para não terem problemas indesejados, adotem o costume de sempre dar um - git pull (nome da branch) - antes de começarem a codar, para não haver conflitos ou coisas do tipo
+
 
 Para um uso seguro do Git nesse projeto, usaremos a princípio a branch "develop", Assim que implementarmos certas partes do projeto que estejam estáveis e seguras, mandaremos para a branch main
