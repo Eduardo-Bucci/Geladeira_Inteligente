@@ -143,3 +143,24 @@ a entrada no estoque, evitando atualizações duplicadas.
 
 5. Relatórios de desperdício
 O relatório será calculado a partir das movimentações de descarte. O valor financeiro será uma estimativa, derivada do custo registrado no lote e da quantidade descartada. Se o custo for desconhecido, o sistema deverá indicar que o valor não foi calculado, em vez de inventar um custo.
+
+# GIT
+
+Para subir no GitHub voce seguirá esses seguintes passos:
+
+1. git init
+2. git add .
+3. git commit -m "Comente o que voce adicionou, mudou ou melhorou aqui"
+4. git remote add origin https://github.com/Eduardo-Bucci/Geladeira_Inteligente.git
+5. git branch -M (nome da branch)
+6. git push -u origin (nome da branch)
+
+Para clonar o repositorio e trabalhar com o modelo mais recente, voce apenas vai escrever
+
+git clone https://github.com/Eduardo-Bucci/Geladeira_Inteligente.git
+
+Se voce ja clonou o repositório e alguem mudou algo nele, você so precisa digitar
+
+git pull (se for alguma branch específica, voce vai escrever o nome dela depois desse comando)
+
+Para um uso seguro do Git nesse projeto, usaremos a princípio a branch "develop", Assim que implementarmos certas partes do projeto que estejam estáveis e seguras, mandaremos para a branch main
