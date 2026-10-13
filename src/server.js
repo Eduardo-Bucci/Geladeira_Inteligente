@@ -1,5 +1,6 @@
 require("dotenv").config()
 const express = require("express");
+const { rotaUsuario } = require("./routes/userRoutes.js")
 const cors = require("cors");
 
 const app = express();
@@ -13,6 +14,8 @@ app.get("/", (req, res) => {
         mensagem:"API Ligada"
     })
 })
+
+app.use(rotaUsuario)
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando no endereço http://localhost:${PORT}`)
