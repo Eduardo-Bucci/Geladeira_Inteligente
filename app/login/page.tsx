@@ -1,10 +1,13 @@
 "use client"
+import {useState} from "react"
 
 // Ler ai tropa: Seria bom mudar a parte de "Área de Login" para algo mais descritivo, 
 // só que fiquei sem ideias :(
 
 export default function Login() {
 
+  const [verSenha, setVerSenha] = useState(false);
+  
   function entrar(){
     
     alert("botao funcionou kkj")
@@ -29,11 +32,20 @@ export default function Login() {
 
 
                 <label>Senha</label>
-                <input type="text"
+                <input type={verSenha ? "text" : "password"}
+
                 placeholder="Digite sua senha"
                 className="mb-4 w-full rounded border border-gray-800 px-3 py-2 focus:outline-none focus:ring focus:ring-gray-800"
                 required
                 />
+
+
+                <button type="button" onClick={() => setVerSenha(!verSenha)}>
+                  {verSenha ? "Ocultar Senha" : "Mostrar Senha"} 
+
+                </button>
+
+
 
 
                  <button type="submit"
