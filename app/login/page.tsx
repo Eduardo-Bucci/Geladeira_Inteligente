@@ -15,8 +15,8 @@ export default function Login() {
   }
 
   return (
-    <main className ="flex h-screen items-center justify-center bg-gray-300">
-            <div className="w-full max-w-md rounded-2x1 bg-gray-300 p-8 shadow-lg border ">
+    <main className ="flex h-screen items-center justify-center bg-green-100">
+            <div className="w-full max-w-md rounded-2x1 bg-green-50 p-8 shadow-lg border ">
                 <h1 className="text-center mb-8 font-bold">Login</h1>
 
                 
@@ -40,7 +40,7 @@ export default function Login() {
                 />
 
 
-                <button type="button" onClick={() => setVerSenha(!verSenha)}>
+                <button type="button" onClick={() => setVerSenha(!verSenha)} className="cursor-pointer">
                   {verSenha ? "Ocultar Senha" : "Mostrar Senha"} 
 
                 </button>
