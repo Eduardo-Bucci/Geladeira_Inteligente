@@ -1,7 +1,6 @@
 const db = require("../config/database.js")
 
-async function cadastrarUsuarioRepo(req, res){
-    const {nome, email, senha} = req.body
+async function cadastrarUsuarioRepo(nome, email, senha){
 
     const sql = `
         INSERT INTO usuarios (nome, email, senha)
@@ -13,6 +12,8 @@ async function cadastrarUsuarioRepo(req, res){
         email,
         senha
     ])
+
+    return { id: result.insertId}
 }
 
 module.exports = {
