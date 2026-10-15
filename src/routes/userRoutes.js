@@ -1,9 +1,11 @@
 const { Router } = require("express")
-const { cadastrarUsuarioController } = require("../controller/userController.js")
+const controller = require("../controller/userController.js")
 
 const rotaUsuario = Router();
 
-rotaUsuario.post("/cadastro", cadastrarUsuarioController)
+rotaUsuario.post("/cadastro", controller.cadastrarUsuarioController)
+
+rotaUsuario.get("/login", controller.loginUsuarioController)
 
 
 module.exports = { 

@@ -13,9 +13,25 @@ async function cadastrarUsuarioRepo(nome, email, senha){
         senha
     ])
 
-    return { id: result.insertId}
+    return { id: result.insertId }
+}
+
+async function LoginRepo(email, senha){
+
+    const sql = `
+    SELECT * FROM usuarios WHERE email = ?
+    `
+
+    const [result] = await db.execute(sql, [
+        email,
+        senha
+    ])
+
+    return { email: result.email }
+
 }
 
 module.exports = {
-    cadastrarUsuarioRepo
+    cadastrarUsuarioRepo,
+    LoginRepo
 }
