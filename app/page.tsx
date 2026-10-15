@@ -23,7 +23,7 @@ export default function Home() {
           aí coloquei oque eu lembrava */}
 
       <h1 className="text-4xl font-bold text-green-800" onClick={paginaInicial}>
-        EcoFridge
+        🍃 EcoFridge
       </h1>
       </header>
 
@@ -64,8 +64,8 @@ export default function Home() {
         </div>
 
 
-        <div className="flex items-center justify-center  
-        rounded-2xl translate-x-180 -translate-y-95 w-fit "> 
+        <div className="flex items-center justify-center w-fit 
+        rounded-2xl translate-x-180 -translate-y-95 "> 
         
             <Carrossel />
 
