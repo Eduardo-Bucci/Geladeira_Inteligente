@@ -2,6 +2,9 @@
 
 export default function Dashboard() {
 
+
+/* 15/10 eu abri essa pagina e quase chorei, fiquei tao triste vendo isso que fiz, que desistir de ajeitar agora*/
+
   return (
     <main className="min-h-screen bg-green-100">
       <header className="flex items-center justify-between bg-green-600 p-4 text-white">

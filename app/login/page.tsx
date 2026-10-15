@@ -13,7 +13,7 @@ export default function Login() {
     
     alert("botao funcionou kkj")
     
-    Router.push("/");
+    Router.push("/dashboard");
   }
    function paginaInicial(){
     Router.push("/");
@@ -29,7 +29,7 @@ export default function Login() {
                 
                 <p className="mb-8 text-center text-gray-600">Área de Login</p>
 
-              <form onSubmit={entrar}>
+              <form onSubmit={(event)=>{event.preventDefault(); entrar();}}>
                 <label>Email</label>
                 <input type="email"
                 placeholder="Digite o seu email"
