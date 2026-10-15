@@ -4,8 +4,8 @@ import { useState } from "react";
 import Image from "next/image"; 
 
 const IMAGENS = [
-  { src: "/imagem.jfif", alt: "Descrição 1" },
-  { src: "/images.jfif", alt: "Descrição 2" },
+  { src: "/EcoFridge.jpeg", alt: "Descrição 1" },
+  { src: "/imagem.jfif", alt: "Descrição 2" },
   { src: "/imagem1.jfif", alt: "Descrição 3" },
 ];
 
@@ -21,10 +21,10 @@ export default function Carrossel() {
   };
 
   return (
-    <div className="relative w-full max-w-sm h-full max-h-sm mx-auto overflow-hidden rounded-lg border border-green-700 shadow-lg">
+    <div className="bg-green-100 pt-2 relative w-full max-w-md h-full max-h-md mx-auto overflow-hidden rounded-lg shadow-lg hover:shadow-2xl hover:scale-101 transition">
       
       <div 
-        className="flex transition-transform duration-500 ease-out"
+        className="flex transition-transform duration-500 ease-out "
         style={{ transform: `translateX(-${slideAtual * 100}%)` }}
       >
         {IMAGENS.map((img, index) => (
@@ -39,12 +39,15 @@ export default function Carrossel() {
           </div>
         ))}
       </div>
+      <p className="text-center text-gray-600 mt-4 mb-4">
+              Descubra como a EcoFridge pode transformar sua experiência de cozinha!
+            </p>
 
       
-      <button onClick={slideAnterior} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black-100">
+      <button onClick={slideAnterior} className="absolute left-2 top-1/2 -translate-y-4/5 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition">
         &#10094;
       </button>
-      <button onClick={proximoSlide} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black-100">
+      <button onClick={proximoSlide} className="absolute right-2 top-1/2 -translate-y-4/5 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition">
         &#10095;
       </button>
     </div>

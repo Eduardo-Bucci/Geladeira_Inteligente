@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
 
-      <header className="w-full flex justify-start px-6 py-5 md:px-16 bg-green-50">
+      <header className="w-full flex justify-start px-6 py-5  md:px-16 bg-green-50 hover:shadow-md transition">
          {/*  14/10  nao entendi o que esse window ta fazendo ai, 
          fui mexer na pagina e ele tava no h1 antigo e coloquei ele ai kk   */}
 
@@ -36,7 +36,7 @@ export default function Home() {
   
 
 
-        <div className="w-full max-w-md rounded-sm bg-green-50 p-8 shadow-lg  mt-10 
+        <div className="w-full max-w-md rounded-sm bg-green-50 p-8 shadow-lg mt-20 
         translate-x-35 -translate-y-7">
 
           
@@ -65,13 +65,13 @@ export default function Home() {
 
 
         <div className="flex items-center justify-center  
-        rounded-2xl translate-x-50 -translate-y-90 "> 
+        rounded-2xl translate-x-65 -translate-y-95 "> 
         
             <Carrossel />
 
-            
         </div>
 
+        {/* As imagens são genéricas */}  
         {/* Coloquei um carrossel de imagens pra ficar massa */}  
 
       </main>
