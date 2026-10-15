@@ -1,10 +1,16 @@
 "use client";
 import {useState} from "react";
+import {useRouter} from "next/navigation"
+
+//tirei o window.Location.href e coloquei Router.push, o codigo 
+// nao tava gostando muito do window
+
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const Router = useRouter();
 
   const [verSenha, setVerSenha] = useState(false);
  //Gostei do bagulhinho que vê a senha
@@ -14,23 +20,27 @@ export default function Cadastro() {
     // aqui bota a lógica pra enviar pro back 
 
     // rota pra página de login
-    window.location.href = "/login";
+    Router.push("/login");
+  }
+  function paginaInicial(){
+    Router.push("/");
   }
 
   return (
     
-      <main className="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-300">
+      <main className="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-50">
 
-        <h1 onClick={() => window.location.href = "/"} className="font-bold text-5xl text-orange-600 mb-1"> EcoFridge </h1>
-        <div className="w-full max-w-md rounded-md bg-green-50 p-8 shadow-lg border mt-10">
-            <h1 className="text-center mb-8 font-bold text-2xl text-green-800">
+        <h1 onClick={paginaInicial} className="translate-y-4 font-bold text-4xl text-green-800 mb-1"> EcoFridge </h1>
+        <div className="-translate-y-2 py-5 w-full max-w-md rounded-md bg-green-50 p-8 shadow-lg border mt-10">
+            <h1 className="text-center mb-8 font-bold text-2xl text-green-700">
             Cadastro
             </h1>
             <p className="text-center text-gray-600">
               Preencha os campos abaixo para criar sua conta.
             </p>
 
-          <form className="mt-6">
+          <form className="mt-6" onSubmit={(event)=>{event.preventDefault(); cadastrar();}} >
+
             <label>Nome</label>
             <input type="text"
             value={nome}
@@ -62,11 +72,15 @@ export default function Cadastro() {
             </button>
 
             <button type="submit"
-            onClick={cadastrar}
+            
             className="w-full rounded bg-orange-600 py-1.5 font-semibold text-white transition hover:bg-orange-700 cursor-pointer">
               Cadastrar
             </button>
           </form>
+
+          <a href="/login" className="mt-4 block text-center text-sm text-green-800 hover:underline">
+              Já possui conta? Faça login
+            </a>
         </div>
       </main>
     

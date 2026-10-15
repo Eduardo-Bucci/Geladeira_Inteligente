@@ -1,25 +1,30 @@
 "use client"
 import {useState} from "react"
+import {useRouter} from "next/navigation"
 
 // Ler ai tropa: Seria bom mudar a parte de "Área de Login" para algo mais descritivo, 
 // só que fiquei sem ideias :(
 
 export default function Login() {
-
+  const Router = useRouter();
   const [verSenha, setVerSenha] = useState(false);
   
   function entrar(){
     
     alert("botao funcionou kkj")
     
-    window.location.href = "/";
+    Router.push("/");
+  }
+   function paginaInicial(){
+    Router.push("/");
   }
 
+
   return (
-    <main className ="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-300">
-            <h1 onClick={() => window.location.href = "/"} className="font-bold text-5xl text-orange-600 mb-7"> EcoFridge </h1>
+    <main className ="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-50">
+            <h1 onClick={paginaInicial} className="font-bold text-5xl text-green-800 mb-7"> EcoFridge </h1>
             <div className="w-full max-w-md rounded-md bg-green-50 p-8 shadow-lg border-green-700 border">
-                <h1 className="text-center mb-8 font-bold text-2xl text-green-800">Login</h1>
+                <h1 className="text-center mb-8 font-bold text-2xl text-green-700">Login</h1>
 
                 
                 <p className="mb-8 text-center text-gray-600">Área de Login</p>

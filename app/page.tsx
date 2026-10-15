@@ -1,16 +1,22 @@
 "use client"
 
 import Link from "next/link";
+import {useRouter} from "next/navigation"
 
 export default function Home() {
+  const Router = useRouter();
 
+   function paginaInicial(){
+    Router.push("/");
+  }
+  
   return (
     <>
 
       <header className="w-full flex justify-start px-6 py-5 md:px-16 bg-green-50">
          {/*  14/10  nao entendi o que esse window ta fazendo ai, 
          fui mexer na pagina e ele tava no h1 antigo e coloquei ele ai kk   */}
-      <h1 className="text-4xl font-bold text-green-800" onClick={() => window.location.href = "/"}>
+      <h1 className="text-4xl font-bold text-green-800" onClick={paginaInicial}>
         EcoFridge
       </h1>
       </header>
@@ -25,7 +31,7 @@ export default function Home() {
 
 
         <div className="w-full max-w-md rounded-sm bg-green-50 p-8 shadow-lg  mt-10 
-        translate-x-35 -translate-y-11">
+        translate-x-35 -translate-y-7">
 
           
           <h2 className="text-center text-green-700 text-xl font-semibold">
