@@ -65,7 +65,7 @@ export default function Home() {
 
 
         <div className="flex items-center justify-center  
-        rounded-2xl translate-x-65 -translate-y-95 "> 
+        rounded-2xl translate-x-180 -translate-y-95 w-fit "> 
         
             <Carrossel />
 
