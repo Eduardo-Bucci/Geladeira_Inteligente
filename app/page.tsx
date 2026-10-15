@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import {useRouter} from "next/navigation"
+import Carrossel from "./components/Carrossel";
+
 
 export default function Home() {
   const Router = useRouter();
@@ -16,6 +18,10 @@ export default function Home() {
       <header className="w-full flex justify-start px-6 py-5 md:px-16 bg-green-50">
          {/*  14/10  nao entendi o que esse window ta fazendo ai, 
          fui mexer na pagina e ele tava no h1 antigo e coloquei ele ai kk   */}
+
+          {/* O window era outra forma do router.push mas eu esqueci como fazer
+          aí coloquei oque eu lembrava */}
+
       <h1 className="text-4xl font-bold text-green-800" onClick={paginaInicial}>
         EcoFridge
       </h1>
@@ -58,18 +64,17 @@ export default function Home() {
         </div>
 
 
-        <div className="flex items-center justify-center w-fit 
-        rounded-2xl translate-x-220 -translate-y-100 ">
-        <p className="text-black">
-             Alguma imagem legal aqui
-        </p>
+        <div className="flex items-center justify-center  
+        rounded-2xl translate-x-50 -translate-y-90 "> 
+        
+            <Carrossel />
+
+            
         </div>
 
-
+        {/* Coloquei um carrossel de imagens pra ficar massa */}  
 
       </main>
-
-
 
 
     </>
