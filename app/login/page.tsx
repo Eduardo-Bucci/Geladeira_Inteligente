@@ -8,6 +8,9 @@ import {useRouter} from "next/navigation"
 export default function Login() {
   const Router = useRouter();
   const [verSenha, setVerSenha] = useState(false);
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
   
   function entrar(){
     
@@ -31,7 +34,11 @@ export default function Login() {
 
               <form onSubmit={(event)=>{event.preventDefault(); entrar();}}>
                 <label>Email</label>
+
                 <input type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+
                 placeholder="Digite o seu email"
                 className="mb-4 w-full rounded border border-green-800 px-3 py-2 focus:outline-none focus:ring focus:ring-orange-400"
                 required
@@ -40,7 +47,8 @@ export default function Login() {
 
                 <label>Senha</label>
                 <input type={verSenha ? "text" : "password"}
-
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
                 placeholder="Digite sua senha"
                 className="mb-4 w-full rounded border border-green-800 px-3 py-2 focus:outline-none focus:ring focus:ring-orange-400"
                 required
