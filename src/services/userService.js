@@ -3,6 +3,10 @@ const bcrypt = require("bcrypt")
 
 async function cadastrarUsuarioService(nome, email, senha){
 
+    if(!nome || !email || !senha){
+        return codigoStatus = 400, mensagem = "Preencha todas os dados"
+    }
+
     const senhaHash = await bcrypt.hash(senha, 10)
 
     const novoUsuarioService = await repository.cadastrarUsuarioRepo(nome, email, senhaHash)
@@ -13,15 +17,17 @@ async function cadastrarUsuarioService(nome, email, senha){
 
 async function LoginUsuarioService(email, senha){
 
-    const login = await repository.LoginRepo(email, senha)
+    const login = await repository.LoginRepo(email)
 
-    //Ajeitar essa parte
-    /*const usuario = login[0]
+    if(!login){
+        throw new Error("Email não encontrado")
+    }
 
-    if(usuario.length === 0){   
-        const error = new error("Email ou senha não encontrados")
-        throw error
-    }*/
+    const verifySenha = await bcrypt.compare(senha, login.senha)
+
+    if(!verifySenha){
+        throw new Error("Senha inválida")
+    }
 
     return login
 }

@@ -28,15 +28,25 @@ async function loginUsuarioController(req, res, next){
     try {
         const {email, senha} = req.body
 
+        if(!email || !senha){
+            return res.status(400).json({
+                mensagem : "E-mail e senha são obrigatórios"
+            })
+        }
+
         const loginController = await service.LoginUsuarioService(email, senha)
 
-        return res.status(201).json({
-            mensagem: "Bem vindo de volta" + email,
+        return res.status(200).json({
+            mensagem: "Bem vindo de volta " + email,
         })
 
     } catch (error) {
-        next(error)
         console.error(error)
+        const codigoStatus = (error.message === "Email não encontrado" || error.message === "Senha inválida") ? 401 : 500
+        
+         return res.status(codigoStatus).json({
+            mensagem: error.message || "Erro interno no servidor de login"
+        })
     }
 
 }

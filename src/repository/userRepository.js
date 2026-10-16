@@ -16,18 +16,21 @@ async function cadastrarUsuarioRepo(nome, email, senha){
     return { id: result.insertId }
 }
 
-async function LoginRepo(email, senha){
+async function LoginRepo(email){
 
     const sql = `
-    SELECT * FROM usuarios WHERE email = ?
+    SELECT * FROM usuarios WHERE email = ? LIMIT 1
     `
 
     const [result] = await db.execute(sql, [
         email,
-        senha
     ])
 
-    return { email: result.email }
+    if(result.length === 0){
+        return null
+    }
+    
+    return result[0]
 
 }
 
