@@ -11,10 +11,17 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
-  
-  function entrar(){
-    
-    alert("botao funcionou kkj")
+
+
+  async function entrar(){
+    try {
+      const response = await fetch(`http://localhost:3001/login`,
+        
+      )
+      
+    } catch (error) {
+      
+    }
     
     Router.push("/dashboard");
   }

@@ -1,9 +1,11 @@
 "use client";
 import {useState} from "react";
 import {useRouter} from "next/navigation"
+import Swal from "sweetalert2";
 
 //tirei o window.Location.href e coloquei Router.push, o codigo 
 // nao tava gostando muito do window
+//Se der error lembra de instalar o sweetalert2 (npm install sweetalert2)
 
 
 export default function Cadastro() {
@@ -15,11 +17,40 @@ export default function Cadastro() {
   const [verSenha, setVerSenha] = useState(false);
  //Gostei do bagulhinho que vê a senha
 
-  function cadastrar() {
-    alert(`Cadastro realizado com sucesso!\nNome: ${nome}\nEmail: ${email}\nSenha: ${senha}`);
-    // aqui bota a lógica pra enviar pro back 
+  async function cadastrarUsuario() {
 
-    // rota pra página de login
+    try {
+      const response = await fetch(`http://localhost:3001/cadastro`, {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+          nome,
+          email,
+          senha
+        })
+      })
+
+      if(response.ok){
+        await Swal.fire({
+          title:"Bem vindo!",
+          text:"Seu cadastro foi finalizado com sucesso!",
+          icon:"success",
+          confirmButtonText:"Ok"
+        })
+      }
+
+    } catch (error) {
+      console.log(error)
+      await Swal.fire({
+          title:"Algo deu errado",
+          text:"Infelizmente algo deu errado em nossos servidores, aguarde um momento e tente novamente",
+          icon:"error",
+          confirmButtonText:"Ok"
+        })
+    }
+
     Router.push("/login");
   }
   function paginaInicial(){
@@ -39,7 +70,7 @@ export default function Cadastro() {
               Preencha os campos abaixo para criar sua conta.
             </p>
 
-          <form className="mt-6" onSubmit={(event)=>{event.preventDefault(); cadastrar();}} >
+          <form className="mt-6" onSubmit={(e)=>{e.preventDefault(); cadastrarUsuario();}} >
 
             <label>Nome</label>
             <input type="text"
