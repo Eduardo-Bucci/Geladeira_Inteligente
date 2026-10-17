@@ -1,0 +1,435 @@
+"use client";
+
+//npm install lucide-react para instalar pacote de icones 
+//Dashboard que o nosso amigo GPT fez
+//nós podemos pegar uma base
+
+import { useMemo, useState } from "react";
+import {
+  Bell,
+  CalendarDays,
+  Check,
+  ChevronDown,
+  CircleHelp,
+  Clock3,
+  CookingPot,
+  LayoutDashboard,
+  Leaf,
+  ListChecks,
+  LogOut,
+  Menu,
+  Plus,
+  Search,
+  Settings,
+  ShoppingBasket,
+  Sparkles,
+  TrendingDown,
+  TriangleAlert,
+  Utensils,
+  X,
+  Refrigerator,
+  Carrot,
+  Apple,
+  Milk,
+  Egg,
+} from "lucide-react";
+
+type Food = {
+  id: number;
+  name: string;
+  category: string;
+  quantity: string;
+  location: string;
+  expiresIn: number;
+  icon: "apple" | "milk" | "egg" | "carrot";
+};
+
+const initialFoods: Food[] = [
+  { id: 1, name: "Leite integral", category: "Laticínios", quantity: "1 litro", location: "Geladeira", expiresIn: 1, icon: "milk" },
+  { id: 2, name: "Tomates", category: "Legumes", quantity: "4 unidades", location: "Gaveta de legumes", expiresIn: 2, icon: "carrot" },
+  { id: 3, name: "Maçãs", category: "Frutas", quantity: "3 unidades", location: "Fruteira", expiresIn: 3, icon: "apple" },
+  { id: 4, name: "Ovos", category: "Laticínios", quantity: "6 unidades", location: "Geladeira", expiresIn: 5, icon: "egg" },
+];
+
+const initialShopping = [
+  { id: 1, name: "Arroz", checked: false },
+  { id: 2, name: "Azeite de oliva", checked: true },
+  { id: 3, name: "Bananas", checked: false },
+];
+
+const navItems = [
+  { label: "Dashboard", icon: LayoutDashboard, active: true },
+  { label: "Meu estoque", icon: Refrigerator, active: false },
+  { label: "Receitas", icon: CookingPot, active: false },
+  { label: "Lista de compras", icon: ShoppingBasket, active: false },
+  { label: "Histórico", icon: CalendarDays, active: false },
+];
+
+function FoodIcon({ kind }: { kind: Food["icon"] }) {
+  const shared = "h-5 w-5";
+  if (kind === "milk") return <Milk className={shared} />;
+  if (kind === "egg") return <Egg className={shared} />;
+  if (kind === "carrot") return <Carrot className={shared} />;
+  return <Apple className={shared} />;
+}
+
+function expiryLabel(days: number) {
+  if (days === 0) return "Vence hoje";
+  if (days === 1) return "Vence amanhã";
+  return `Vence em ${days} dias`;
+}
+
+export default function DashboardPage() {
+  const [foods, setFoods] = useState(initialFoods);
+  const [shopping, setShopping] = useState(initialShopping);
+  const [search, setSearch] = useState("");
+  const [showAddFood, setShowAddFood] = useState(false);
+  const [newFoodName, setNewFoodName] = useState("");
+  const [newFoodQuantity, setNewFoodQuantity] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState("Dashboard");
+
+  const filteredFoods = useMemo(
+    () => foods.filter((food) => food.name.toLowerCase().includes(search.toLowerCase())),
+    [foods, search]
+  );
+
+  const completedShopping = shopping.filter((item) => item.checked).length;
+
+  function addFood(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newFoodName.trim() || !newFoodQuantity.trim()) return;
+    setFoods((current) => [
+      ...current,
+      {
+        id: Date.now(),
+        name: newFoodName.trim(),
+        category: "Outros",
+        quantity: newFoodQuantity.trim(),
+        location: "Geladeira",
+        expiresIn: 7,
+        icon: "apple",
+      },
+    ]);
+    setNewFoodName("");
+    setNewFoodQuantity("");
+    setShowAddFood(false);
+  }
+
+  function toggleShopping(id: number) {
+    setShopping((current) =>
+      current.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f7f8f5] text-slate-800">
+      {mobileMenuOpen && (
+        <button
+          aria-label="Fechar menu"
+          className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 flex w-[260px] flex-col border-r border-slate-100 bg-white px-5 py-6 transition-transform lg:translate-x-0 ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="mb-10 flex items-center gap-3 px-2">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+            <Refrigerator className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="text-lg font-extrabold tracking-tight text-slate-900">Geladeira<span className="text-emerald-600"> Viva</span></p>
+            <p className="text-xs text-slate-400">Sua casa, sem desperdício</p>
+          </div>
+          <button className="ml-auto rounded-lg p-2 text-slate-400 lg:hidden" onClick={() => setMobileMenuOpen(false)} aria-label="Fechar menu">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Menu principal</p>
+        <nav className="space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = activeNav === item.label;
+            return (
+              <button
+                key={item.label}
+                onClick={() => {
+                  setActiveNav(item.label);
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition ${
+                  active ? "bg-emerald-50 text-emerald-700" : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                }`}
+              >
+                <Icon className="h-[18px] w-[18px]" />
+                {item.label}
+                {item.label === "Meu estoque" && (
+                  <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">4</span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="mt-8">
+          <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Preferências</p>
+          <button onClick={() => setActiveNav("Configurações")} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${activeNav === "Configurações" ? "bg-emerald-50 text-emerald-700" : "text-slate-500 hover:bg-slate-50"}`}>
+            <Settings className="h-[18px] w-[18px]" /> Configurações
+          </button>
+          <button onClick={() => setActiveNav("Ajuda")} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${activeNav === "Ajuda" ? "bg-emerald-50 text-emerald-700" : "text-slate-500 hover:bg-slate-50"}`}>
+            <CircleHelp className="h-[18px] w-[18px]" /> Central de ajuda
+          </button>
+        </div>
+
+        <div className="mt-auto rounded-2xl bg-emerald-50 p-4">
+          <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white text-emerald-700">
+            <Leaf className="h-5 w-5" />
+          </div>
+          <p className="text-sm font-bold text-slate-800">Pequenas atitudes, grande impacto!</p>
+          <p className="mt-1 text-xs leading-5 text-slate-500">Planejar suas refeições ajuda a aproveitar melhor cada alimento.</p>
+          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-700">
+            <TrendingDown className="h-4 w-4" /> Menos desperdício
+          </div>
+        </div>
+
+        <button className="mt-5 flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50">
+          <LogOut className="h-[18px] w-[18px]" /> Sair da conta
+        </button>
+      </aside>
+
+      <main className="min-h-screen lg:pl-[260px]">
+        <header className="sticky top-0 z-20 flex h-[76px] items-center justify-between border-b border-slate-100 bg-white/90 px-4 backdrop-blur md:px-8">
+          <div className="flex items-center gap-3">
+            <button className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden" onClick={() => setMobileMenuOpen(true)} aria-label="Abrir menu">
+              <Menu className="h-5 w-5" />
+            </button>
+            <div>
+              <p className="text-sm font-bold text-slate-800">{activeNav}</p>
+              <p className="hidden text-xs text-slate-400 sm:block">Organize sua cozinha com mais inteligência</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 md:gap-5">
+            <div className="hidden items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-xs font-medium text-slate-500 sm:flex">
+              <CalendarDays className="h-4 w-4 text-slate-400" /> Sábado, 17 de outubro
+            </div>
+            <button className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50" aria-label="Notificações">
+              <Bell className="h-[18px] w-[18px]" />
+              <span className="absolute right-2 top-2 h-2 w-2 rounded-full border-2 border-white bg-rose-500" />
+            </button>
+            <button className="flex items-center gap-2 rounded-xl p-1.5 hover:bg-slate-50">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-sm font-extrabold text-emerald-700">SL</div>
+              <div className="hidden text-left sm:block">
+                <p className="text-xs font-bold text-slate-800">Minha família</p>
+                <p className="text-[10px] text-slate-400">Plano doméstico</p>
+              </div>
+              <ChevronDown className="hidden h-4 w-4 text-slate-400 sm:block" />
+            </button>
+          </div>
+        </header>
+
+        <div className="mx-auto max-w-[1440px] px-4 py-7 md:px-8 md:py-9">
+          <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700"><Sparkles className="h-4 w-4" /> Seu resumo de hoje</p>
+              <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Bom dia! Vamos evitar desperdícios? <span>🌿</span></h1>
+              <p className="mt-2 text-sm text-slate-500">Aqui está um panorama da sua cozinha.</p>
+            </div>
+            <button onClick={() => setShowAddFood(true)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-sm shadow-emerald-200 transition hover:bg-emerald-700">
+              <Plus className="h-4 w-4" /> Adicionar alimento
+            </button>
+          </div>
+
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <StatCard title="Alimentos no estoque" value={String(foods.length + 24)} detail="Em todos os locais" icon={<Refrigerator className="h-5 w-5" />} iconClass="bg-emerald-50 text-emerald-700" trend="+3 esta semana" />
+            <StatCard title="Vencem em breve" value={String(foods.filter((food) => food.expiresIn <= 3).length)} detail="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} iconClass="bg-amber-50 text-amber-700" trend="Atenção necessária" />
+            <StatCard title="Lista de compras" value={String(shopping.filter((item) => !item.checked).length)} detail="Itens pendentes" icon={<ShoppingBasket className="h-5 w-5" />} iconClass="bg-sky-50 text-sky-700" trend={`${completedShopping} concluído(s)`} />
+            <StatCard title="Desperdício evitado" value="R$ 48,50" detail="Estimativa neste mês" icon={<Leaf className="h-5 w-5" />} iconClass="bg-violet-50 text-violet-700" trend="Meta mensal: R$ 80" />
+          </section>
+
+          <section className="mt-6 grid gap-6 xl:grid-cols-[1.55fr_1fr]">
+            <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm md:p-6">
+              <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                <div>
+                  <h2 className="text-base font-extrabold text-slate-900">Atenção à validade</h2>
+                  <p className="mt-1 text-xs text-slate-400">Use estes alimentos primeiro para evitar perdas.</p>
+                </div>
+                <button onClick={() => setActiveNav("Meu estoque")} className="self-start text-xs font-bold text-emerald-700 hover:text-emerald-800 sm:self-auto">Ver estoque completo →</button>
+              </div>
+              <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-100 bg-amber-50 px-3 py-3 text-xs text-amber-800">
+                <TriangleAlert className="h-4 w-4 shrink-0" />
+                <span><strong>{foods.filter((food) => food.expiresIn <= 3).length} alimentos</strong> precisam de atenção nos próximos 3 dias.</span>
+              </div>
+              <div className="mb-3 flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                <Search className="h-4 w-4 text-slate-400" />
+                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar alimento..." className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400" />
+                {search && <button onClick={() => setSearch("")} aria-label="Limpar busca"><X className="h-4 w-4 text-slate-400" /></button>}
+              </div>
+              <div className="divide-y divide-slate-100">
+                {filteredFoods.length === 0 ? (
+                  <p className="py-8 text-center text-sm text-slate-400">Nenhum alimento encontrado.</p>
+                ) : filteredFoods.map((food) => (
+                  <div key={food.id} className="flex items-center gap-3 py-3.5">
+                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${food.expiresIn <= 2 ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}>
+                      <FoodIcon kind={food.icon} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-slate-800">{food.name}</p>
+                      <p className="mt-1 text-xs text-slate-400">{food.quantity} · {food.location}</p>
+                    </div>
+                    <div className={`shrink-0 rounded-lg px-2.5 py-1.5 text-[10px] font-bold sm:text-xs ${food.expiresIn <= 2 ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600"}`}>
+                      {expiryLabel(food.expiresIn)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <div className="overflow-hidden rounded-2xl bg-emerald-700 p-6 text-white shadow-sm">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white/15"><CookingPot className="h-5 w-5" /></div>
+                    <p className="text-xs font-semibold text-emerald-100">IDEIA PARA SUA PRÓXIMA REFEIÇÃO</p>
+                    <h2 className="mt-2 text-xl font-extrabold">Que tal cozinhar com o que você já tem?</h2>
+                  </div>
+                  <Sparkles className="h-5 w-5 shrink-0 text-emerald-200" />
+                </div>
+                <p className="mt-3 max-w-sm text-sm leading-6 text-emerald-50">Encontre receitas que aproveitam ingredientes do seu estoque, começando pelos que vencem primeiro.</p>
+                <button onClick={() => setActiveNav("Receitas")} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-extrabold text-emerald-800 transition hover:bg-emerald-50">
+                  <Utensils className="h-4 w-4" /> Encontrar receitas
+                </button>
+                <div className="pointer-events-none relative -mb-6 mt-2 flex justify-end opacity-20">
+                  <Carrot className="h-20 w-20 -rotate-12" />
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm md:p-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-extrabold text-slate-900">Lista de compras</h2>
+                    <p className="mt-1 text-xs text-slate-400">{completedShopping} de {shopping.length} itens concluídos</p>
+                  </div>
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-700"><ListChecks className="h-5 w-5" /></div>
+                </div>
+                <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                  <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${shopping.length ? (completedShopping / shopping.length) * 100 : 0}%` }} />
+                </div>
+                <div className="space-y-2">
+                  {shopping.map((item) => (
+                    <button key={item.id} onClick={() => toggleShopping(item.id)} className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition hover:bg-slate-50">
+                      <span className={`flex h-5 w-5 items-center justify-center rounded-md border ${item.checked ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300 bg-white text-transparent"}`}>
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                      <span className={`flex-1 text-sm ${item.checked ? "text-slate-400 line-through" : "font-medium text-slate-700"}`}>{item.name}</span>
+                    </button>
+                  ))}
+                </div>
+                <button onClick={() => setActiveNav("Lista de compras")} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
+                  Abrir lista completa <Plus className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-6 grid gap-4 md:grid-cols-3">
+            <QuickAction icon={<Plus className="h-5 w-5" />} title="Cadastrar alimento" description="Atualize o que tem na sua cozinha." onClick={() => setShowAddFood(true)} />
+            <QuickAction icon={<CookingPot className="h-5 w-5" />} title="Descobrir receitas" description="Inspire-se com seus ingredientes." onClick={() => setActiveNav("Receitas")} />
+            <QuickAction icon={<ShoppingBasket className="h-5 w-5" />} title="Planejar compras" description="Confira o que ainda precisa comprar." onClick={() => setActiveNav("Lista de compras")} />
+          </section>
+
+          <footer className="mt-8 flex flex-col justify-between gap-2 border-t border-slate-200/70 pt-5 text-xs text-slate-400 sm:flex-row">
+            <p>© 2026 Geladeira Viva · Organize, aproveite, não desperdice.</p>
+            <p>Dashboard demonstrativo — dados fictícios</p>
+          </footer>
+        </div>
+      </main>
+
+      {showAddFood && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowAddFood(false); }}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="mb-5 flex items-start justify-between">
+              <div>
+                <h2 className="text-lg font-extrabold text-slate-900">Adicionar alimento</h2>
+                <p className="mt-1 text-sm text-slate-500">Inclua um item no seu estoque demonstrativo.</p>
+              </div>
+              <button onClick={() => setShowAddFood(false)} aria-label="Fechar formulário" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100"><X className="h-5 w-5" /></button>
+            </div>
+            <form onSubmit={addFood} className="space-y-4">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Nome do alimento</span>
+                <input autoFocus value={newFoodName} onChange={(event) => setNewFoodName(event.target.value)} required placeholder="Ex.: Queijo minas" className="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50" />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Quantidade</span>
+                <input value={newFoodQuantity} onChange={(event) => setNewFoodQuantity(event.target.value)} required placeholder="Ex.: 300 gramas" className="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50" />
+              </label>
+              <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">No protótipo, o novo alimento recebe uma validade demonstrativa de 7 dias. A versão completa deverá permitir informar a data real.</p>
+              <div className="flex gap-3 pt-1">
+                <button type="button" onClick={() => setShowAddFood(false)} className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Cancelar</button>
+                <button type="submit" className="flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white hover:bg-emerald-700">Salvar alimento</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+  detail,
+  icon,
+  iconClass,
+  trend,
+}: {
+  title: string;
+  value: string;
+  detail: string;
+  icon: React.ReactNode;
+  iconClass: string;
+  trend: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-semibold text-slate-500">{title}</p>
+          <p className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900">{value}</p>
+          <p className="mt-1 text-xs text-slate-400">{detail}</p>
+        </div>
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconClass}`}>{icon}</div>
+      </div>
+      <div className="mt-4 border-t border-slate-100 pt-3 text-[11px] font-semibold text-slate-500">{trend}</div>
+    </div>
+  );
+}
+
+function QuickAction({
+  icon,
+  title,
+  description,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick: () => void;
+}) {
+  return (
+    <button onClick={onClick} className="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition hover:border-emerald-200 hover:shadow-md">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-600 group-hover:text-white">{icon}</div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-extrabold text-slate-800">{title}</p>
+        <p className="mt-1 text-xs text-slate-400">{description}</p>
+      </div>
+      <Plus className="h-4 w-4 text-slate-300 transition group-hover:text-emerald-600" />
+    </button>
+  );
+}

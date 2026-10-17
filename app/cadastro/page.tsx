@@ -3,9 +3,11 @@ import {useState} from "react";
 import {useRouter} from "next/navigation"
 import Swal from "sweetalert2";
 
-//tirei o window.Location.href e coloquei Router.push, o codigo 
+// tirei o window.Location.href e coloquei Router.push, o codigo 
 // nao tava gostando muito do window
-//Se der error lembra de instalar o sweetalert2 (npm install sweetalert2)
+// Samuel: certamente vai ficar melhor, e o window.Location.href é meio que uma gambiarra
+
+// Se der error lembra de instalar o sweetalert2 (npm install sweetalert2)
 
 
 export default function Cadastro() {

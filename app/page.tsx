@@ -69,11 +69,7 @@ export default function Home() {
         
             <Carrossel />
 
-        </div>
-
-        {/* As imagens são genéricas */}  
-        {/* Coloquei um carrossel de imagens pra ficar massa */}  
-
+        </div> 
       </main>
 
 
