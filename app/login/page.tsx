@@ -16,14 +16,17 @@ export default function Login() {
 
   async function entrar(){
    try {
-      const response = await fetch(`http://localhost:3001/login`, {
-        
-        body: JSON.stringify({
+      const response = await fetch("http://localhost:3001/login", {
+       method: "POST",
+       headers: {
+       "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+    email,
+    senha,
+     }),
+    });
 
-          email,
-          senha
-        })
-      })
 
       if(response.ok){
               await Swal.fire({
@@ -32,11 +35,12 @@ export default function Login() {
                 icon:"success",
                 confirmButtonText:"Ok"
               })
+               Router.push("/dashboard");
             }
+           
+    } 
       
-       Router.push("/dashboard");
-       
-    } catch (error) {
+    catch (error) {
       console.log(error)
             await Swal.fire({
                 title:"Algo deu errado",
