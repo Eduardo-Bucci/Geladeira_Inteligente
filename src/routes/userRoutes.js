@@ -5,7 +5,7 @@ const rotaUsuario = Router();
 
 rotaUsuario.post("/cadastro", controller.cadastrarUsuarioController)
 
-rotaUsuario.get("/login", controller.loginUsuarioController)
+rotaUsuario.post("/login", controller.loginUsuarioController)
 
 
 module.exports = { 
