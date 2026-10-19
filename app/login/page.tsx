@@ -30,20 +30,21 @@ export default function Login() {
                 title:"Bem vindo!",
                 text:"Seu cadastro foi finalizado com sucesso!",
                 icon:"success",
-                confirmButtonText:"Ok"
+                confirmButtonText: "OK"
               })
-            }
-      
-       Router.push("/dashboard");
+            
+            Router.push("/dashboard");
+      }
+    
        
     } catch (error) {
       console.log(error)
-            await Swal.fire({
-                title:"Algo deu errado",
-                text:"Infelizmente algo deu errado em nossos servidores, aguarde um momento e tente novamente",
-                icon:"error",
-                confirmButtonText:"Ok"
-              })
+          await Swal.fire({
+              title:"Algo deu errado",
+              text:"Infelizmente algo deu errado em nossos servidores, aguarde um momento e tente novamente",
+              icon:"error",
+              confirmButtonText: "OK"
+          })
     }
     
    

@@ -36,7 +36,7 @@ export default function Home() {
   
 
 
-        <div className="w-full max-w-md rounded-sm bg-green-50 p-8 shadow-lg mt-20 
+        <div className="w-full max-w-md rounded-sm bg-yellow-50 p-8 shadow-lg mt-20 
         translate-x-35 -translate-y-7">
 
           

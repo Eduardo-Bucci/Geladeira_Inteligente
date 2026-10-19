@@ -36,7 +36,7 @@ export default function Cadastro() {
 
       if(response.ok){
         await Swal.fire({
-          title:"Bem vindo!",
+          title:"Tudo certo!",
           text:"Seu cadastro foi finalizado com sucesso!",
           icon:"success",
           confirmButtonText:"Ok"
