@@ -161,6 +161,7 @@ export default function DashboardPage() {
         <section className="mt-6 grid gap-4 md:grid-cols-3">
           <QuickAction onClick={() => setShowForm(true)} icon={<Plus className="h-5 w-5" />} title="Cadastrar alimento" description="Atualize o que tem na sua cozinha." />
           <QuickAction onClick={() => Router.push("/receitas")} icon={<CookingPot className="h-5 w-5" />} title="Descobrir receitas" description="Inspire-se com seus ingredientes." />
+          <QuickAction onClick={() => Router.push("/compras")} icon={<ShoppingBasket className="h-5 w-5" />} title="Lista de compras" description="Organize o que precisa comprar." />
         </section>
 
         <footer className="py-6 text-center text-xs text-slate-400">EcoFridge · Protótipo </footer>
