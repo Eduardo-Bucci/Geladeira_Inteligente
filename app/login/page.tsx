@@ -31,13 +31,20 @@ export default function Login() {
       if(response.ok){
               await Swal.fire({
                 title:"Bem vindo!",
-                text:"Seu cadastro foi finalizado com sucesso!",
+                text:"Seu login foi finalizado com sucesso!",
                 icon:"success",
                 confirmButtonText:"Ok"
               })
                Router.push("/dashboard");
             }
-           
+      else{
+        await Swal.fire({
+          title:"Algo deu errado",
+          text:"Email ou senha incorretos, tente novamente",
+          icon:"error",
+          confirmButtonText:"Ok"
+        })
+      }
     } 
       
     catch (error) {
