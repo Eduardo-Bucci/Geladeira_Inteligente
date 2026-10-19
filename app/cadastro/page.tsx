@@ -42,7 +42,7 @@ export default function Cadastro() {
           confirmButtonText:"Ok"
         })
       }
-
+       Router.push("/login");
     } catch (error) {
       console.log(error)
       await Swal.fire({
@@ -53,7 +53,7 @@ export default function Cadastro() {
         })
     }
 
-    Router.push("/login");
+   
   }
   function paginaInicial(){
     Router.push("/");

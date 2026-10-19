@@ -1,6 +1,7 @@
 "use client"
 import {useState} from "react"
 import {useRouter} from "next/navigation"
+import Swal from "sweetalert2";
 
 // Ler ai tropa: Seria bom mudar a parte de "Área de Login" para algo mais descritivo, 
 // só que fiquei sem ideias :(
@@ -14,16 +15,38 @@ export default function Login() {
 
 
   async function entrar(){
-    try {
-      const response = await fetch(`http://localhost:3001/login`,
+   try {
+      const response = await fetch(`http://localhost:3001/login`, {
         
-      )
+        body: JSON.stringify({
+
+          email,
+          senha
+        })
+      })
+
+      if(response.ok){
+              await Swal.fire({
+                title:"Bem vindo!",
+                text:"Seu cadastro foi finalizado com sucesso!",
+                icon:"success",
+                confirmButtonText:"Ok"
+              })
+            }
       
+       Router.push("/dashboard");
+       
     } catch (error) {
-      
+      console.log(error)
+            await Swal.fire({
+                title:"Algo deu errado",
+                text:"Infelizmente algo deu errado em nossos servidores, aguarde um momento e tente novamente",
+                icon:"error",
+                confirmButtonText:"Ok"
+              })
     }
     
-    Router.push("/dashboard");
+   
   }
    function paginaInicial(){
     Router.push("/");
