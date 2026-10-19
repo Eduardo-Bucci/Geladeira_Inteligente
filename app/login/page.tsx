@@ -31,7 +31,7 @@ export default function Login() {
       if(response.ok){
               await Swal.fire({
                 title:"Bem vindo!",
-                text:"Seu cadastro foi finalizado com sucesso!",
+                text:"Seu login foi finalizado com sucesso!",
                 icon:"success",
                 confirmButtonText: "OK"
               })
