@@ -29,6 +29,13 @@ export default function Login() {
 
 
       if(response.ok){
+
+        if(email === "admin@ecofridge.com" && senha === "admin123"){
+          alert("cuida cuida admin")
+           Router.push("/admin");
+
+        }
+        else{
               await Swal.fire({
                 title:"Bem vindo!",
                 text:"Seu login foi finalizado com sucesso!",
@@ -36,7 +43,11 @@ export default function Login() {
                 confirmButtonText:"Ok"
               })
                Router.push("/dashboard");
+               
+               
             }
+      }
+        
       else{
         await Swal.fire({
           title:"Algo deu errado",
