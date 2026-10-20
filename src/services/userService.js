@@ -15,6 +15,7 @@ async function cadastrarUsuarioService(nome, email, senha){
 
 }
 
+
 async function LoginUsuarioService(email, senha){
 
     const login = await repository.LoginRepo(email)
@@ -32,7 +33,30 @@ async function LoginUsuarioService(email, senha){
     return login
 }
 
+
+
+async function listarUsuariosService() {
+  return await repository.listarUsuariosRepo();
+}
+
+
+
+
+async function excluirUsuarioService(id) {
+  const resultado = await repository.excluirUsuarioRepo(id);
+
+  if (resultado === 0) {
+    throw new Error("Usuário não encontrado");
+  }
+
+  return resultado;
+}
+
+
+
 module.exports = {
     cadastrarUsuarioService,
-    LoginUsuarioService
+    LoginUsuarioService,
+    listarUsuariosService,
+    excluirUsuarioService
 }

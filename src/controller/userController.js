@@ -51,7 +51,45 @@ async function loginUsuarioController(req, res, next){
 
 }
 
+
+async function listarUsuariosController(req, res, next) {
+  try {
+    const usuarios = await service.listarUsuariosService();
+    return res.status(200).json(usuarios);
+  } catch (error) {
+    console.error("ERRO REAL AO LISTAR:", error);
+    return next(error);
+  }
+}
+
+
+
+async function excluirUsuarioController(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({
+        mensagem: "ID inválido",
+      });
+    }
+
+    await service.excluirUsuarioService(id);
+
+    return res.status(200).json({
+      mensagem: "Usuário excluído com sucesso",
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+
+
+
 module.exports = {
     cadastrarUsuarioController,
-    loginUsuarioController
+    loginUsuarioController,
+    listarUsuariosController,
+    excluirUsuarioController
 }
