@@ -86,6 +86,10 @@ export default function DashboardPage() {
     Router.push("/");
   }
 
+  function notification(){
+    alert("Não tem nada kkk");
+  }
+
   return (
     <main className="min-h-screen bg-linear-to-t from-green-200 to-green-50 px-4 py-6 text-slate-800 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
@@ -93,11 +97,11 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><Refrigerator className="h-6 w-6" /></div>
             <div>
-              <h1 onClick={paginaInicial} className="text-lg font-extrabold tracking-tight text-slate-900">Eco<span className="text-emerald-600">Fridge</span></h1>
+              <h1 onClick={paginaInicial} className="text-lg font-extrabold tracking-tight text-slate-900 cursor-pointer">Eco<span className="text-emerald-600">Fridge</span></h1>
               <p className="text-xs text-slate-400">Organize, aproveite, não desperdice.</p>
             </div>
           </div>
-          <button aria-label="Notificações" className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50">
+          <button aria-label="Notificações" onClick={notification} className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50">
             <Bell className="h-5 w-5" /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />
           </button>
         </header>
