@@ -31,7 +31,13 @@ export default function Login() {
       if(response.ok){
 
         if(email === "admin@ecofridge.com" && senha === "admin123"){
-          alert("cuida cuida admin")
+          
+          await Swal.fire({
+            title:"Cuida admin!",
+            text:"Bora trabalhar, porque quem ganha roubando é o Lula!",
+            icon:"success",
+            confirmButtonText: "OK"
+          })
            Router.push("/admin");
 
         }

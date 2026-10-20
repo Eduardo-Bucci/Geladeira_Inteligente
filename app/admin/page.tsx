@@ -94,7 +94,7 @@ export default function Admin() {
   }
 
   return (
-    <main className="min-h-screen from-green-200 to-green-100 p-8 text-black">
+    <main className="min-h-screen bg-linear-to-t from-green-200 to-green-100 p-8 text-black">
       <div className="mx-auto max-w-6xl">
         <h1 className="mb-6 text-3xl font-bold">
           Gerenciar Usuários
@@ -113,7 +113,7 @@ export default function Admin() {
             {usuarios.map((usuario) => (
               <div
                 key={usuario.id}
-                className="rounded-lg border border-gray-700 bg-green-300 p-4 shadow"
+                className="rounded-lg border border-green-700 bg-green-300 p-4 shadow hover:scale-105 transition-transform hover:shadow-lg"
               >
                 <h2 className="text-xl font-bold text-black">{usuario.nome}</h2>
 

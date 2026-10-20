@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
 
-      <header className="w-full flex justify-start px-6 py-5  md:px-16 bg-green-50 hover:shadow-md transition">
+      <header className="w-full bg-green-100 flex justify-start px-6 py-5  md:px-16 bg-green-50 hover:shadow-md transition">
          {/*  14/10  nao entendi o que esse window ta fazendo ai, 
          fui mexer na pagina e ele tava no h1 antigo e coloquei ele ai kk   */}
 
@@ -72,7 +72,7 @@ export default function Home() {
         </div> 
       </main>
 
-
+        <footer className="py-6 bg-green-800 text-green-50 text-center text-xs"> EcoFridge · Protótipo </footer>
     </>
   );
 }
