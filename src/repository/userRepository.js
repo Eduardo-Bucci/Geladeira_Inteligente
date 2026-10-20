@@ -34,7 +34,33 @@ async function LoginRepo(email){
 
 }
 
+
+async function listarUsuariosRepo() {
+    const sql = `
+        SELECT id, nome, email
+        FROM usuarios
+        ORDER BY id DESC
+    `;
+
+    const [usuarios] = await db.execute(sql);
+    return usuarios;
+}
+
+async function excluirUsuarioRepo(id) {
+    const sql = `
+        DELETE FROM usuarios
+        WHERE id = ?
+    `;
+
+    const [resultado] = await db.execute(sql, [id]);
+    return resultado.affectedRows;
+}
+
+
+
 module.exports = {
     cadastrarUsuarioRepo,
-    LoginRepo
+    LoginRepo,
+     listarUsuariosRepo,
+    excluirUsuarioRepo
 }
