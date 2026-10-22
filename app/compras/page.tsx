@@ -95,13 +95,13 @@ export default function Compras() {
                     ))
                   )}
 
-                  <button onClick={deletarItem} className="mt-4 flex w-full items-center justify-center gap-2 text-red-500 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700">
+                  <button onClick={deletarItem} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700">
                     Deletar itens selecionados <Trash2 className="h-3.5 w-3.5" />
                   </button>
                   
                 </div>
 
-                <button onClick={() => setShowForm(true)} className="mt-4 flex w-full items-center justify-center gap-2 text-emerald-500 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
+                <button onClick={() => setShowForm(true)} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700">
                   Adicionar item <Plus className="h-3.5 w-3.5" />
                 </button>
                 

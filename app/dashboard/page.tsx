@@ -95,7 +95,7 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-5xl">
         <header className="mb-8 flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><Refrigerator className="h-6 w-6" /></div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><Leaf size={19}/></div>
             <div>
               <h1 onClick={paginaInicial} className="text-lg font-extrabold tracking-tight text-slate-900 cursor-pointer">Eco<span className="text-emerald-600">Fridge</span></h1>
               <p className="text-xs text-slate-400">Organize, aproveite, não desperdice.</p>
@@ -118,10 +118,10 @@ export default function DashboardPage() {
         </section>
 
         <section className="mb-6 grid gap-4 w-3xl sm:grid-cols-3">
-          <SummaryCard title="Alimentos cadastrados" value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" />
-          <SummaryCard title="Vencem em breve" value={String(foods.filter((food) => food.expiryDays <= 3).length)} note="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} color="amber" />
-          <SummaryCard title="Lista de compras" value="3" note="Itens para comprar" icon={<ShoppingBasket className="h-5 w-5" />} color="sky" />
-          <SummaryCard title="Receitas sugeridas" value="5" note="Com base nos alimentos" icon={<CookingPot className="h-5 w-5" />} color="emerald" />
+          <SummaryCardHome title="Alimentos cadastrados" value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" />
+          <SummaryCardHome title="Vencem em breve" value={String(foods.filter((food) => food.expiryDays <= 3).length)} note="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} color="amber" />
+          <SummaryCard title="Lista de compras" onClick={() => Router.push("/compras")} value="3" note="Itens para comprar" icon={<ShoppingBasket className="h-5 w-5" />} color="sky" />
+          <SummaryCard title="Receitas sugeridas" onClick={() => Router.push("/receitas")} value="5" note="Com base nos alimentos" icon={<CookingPot className="h-5 w-5" />} color="emerald" />
         </section>
 
         {/*div de alerta de alimentos próximos do vencimento, essa div pode ser colocada somente quando houver alimentos próximos do vencimento */}
@@ -218,14 +218,31 @@ function QuickAction({
   );
 }
 
-function SummaryCard({ title, value, note, icon, color }: { title: string; value: string; note: string; icon: React.ReactNode; color: "emerald" | "amber" | "sky" }) {
+function SummaryCard({ title, value, note, icon, color, onClick }: { title: string; value: string; note: string; icon: React.ReactNode; color: "emerald" | "amber" | "sky"; onClick: () => void; }) {
   const colorClasses = {
     emerald: "bg-emerald-50 text-emerald-700",
     amber: "bg-amber-50 text-amber-700",
     sky: "bg-sky-50 text-sky-700",
   };
-  return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+  return ( 
+    <div onClick={onClick} className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:scale-102 cursor-pointer">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-slate-500">{title}</p>
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${colorClasses[color]}`}>{icon}</div>
+      </div>
+      <p className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">{value}</p>
+      <p className="mt-1 text-xs text-slate-400">{note}</p>
+    </div>
+  );
+}
+function SummaryCardHome({ title, value, note, icon, color,}: { title: string; value: string; note: string; icon: React.ReactNode; color: "emerald" | "amber" | "sky"}) {
+  const colorClasses = {
+    emerald: "bg-emerald-50 text-emerald-700",
+    amber: "bg-amber-50 text-amber-700",
+    sky: "bg-sky-50 text-sky-700",
+  };
+  return ( 
+    <div  className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-slate-500">{title}</p>
         <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${colorClasses[color]}`}>{icon}</div>
