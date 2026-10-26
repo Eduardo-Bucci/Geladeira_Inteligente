@@ -12,6 +12,9 @@ interface Usuario {
 export default function Admin() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [buscando, setBuscando] = useState(true);
+  const [nome, setNome] = useState("")
+  const [senha, setSenha] = useState("")
+  const [tela, setTela] = useState("inicio")
 
   async function buscarUsuarios() {
     try {
@@ -92,44 +95,117 @@ export default function Admin() {
       });
     }
   }
+  function validacao(){
+    if(nome === "admininastror" && senha === "123456"){
+      Swal.fire({
+        title: "Bem vindo de volta ADM!",
+        text: "Veja e exclua quem quiser!",
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
+      setTela("admin")
+    }
+    else{
+      Swal.fire({
+        title: "IMPOSTOR",
+        text: "computador auto-expodindo em 5, 4, 3, 2...",
+        icon: "error",
+        confirmButtonText: "AAAAAA",
+      });
+    }
+  }
 
-  return (
-    <main className="min-h-screen bg-linear-to-t from-green-200 to-green-100 p-8 text-black">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="mb-6 text-3xl font-bold">
-          Gerenciar Usuários
-        </h1>
+  return(
+    <>
+    {tela === "inicio" && validacaoPage()}
+    {tela === "admin" && adminPage()}
+    </>
+  )
 
-        {buscando ? (
-          <p className="text-gray-300">Carregando usuários...</p>
-        ) : usuarios.length === 0 ? (
-          <div className="rounded-lg bg-green-700 p-8 text-center shadow">
-            <p className="text-gray-400">
-              Nenhum usuário cadastrado
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {usuarios.map((usuario) => (
-              <div
-                key={usuario.id}
-                className="rounded-lg border border-green-700 bg-green-300 p-4 shadow hover:scale-105 transition-transform hover:shadow-lg"
-              >
-                <h2 className="text-xl font-bold text-black">{usuario.nome}</h2>
 
-                <p className="mt-3 text-black">{usuario.email}</p>
+  function validacaoPage(){
+    return(
+      <>
+      <main className ="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-50">
+            <div className="w-full max-w-md rounded-md bg-green-50 p-8 shadow-lg border-green-700 border">
+                <h1 className="text-center mb-8 font-bold text-2xl text-green-700">Área de Administrador</h1>
+  
+                <p className="mb-8 text-center text-gray-600">Área de Admin</p>
 
-                <button
-                  className="mt-4 w-full rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
-                  onClick={() => excluirUsuario(usuario.id)}
-                >
-                  Excluir
+              <form onSubmit={(event)=>{event.preventDefault(); validacao()}}>
+
+                <label>nome</label>
+                <input type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}               
+                placeholder="Digite o nome do administrador"
+                className="mb-4 w-full rounded border border-green-800 px-3 py-2 focus:outline-none focus:ring focus:ring-orange-400"
+                required
+                />
+
+                <label>senha</label>
+                <input type="text"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}               
+                placeholder="Digite a senha do administrador"
+                className="mb-4 w-full rounded border border-green-800 px-3 py-2 focus:outline-none focus:ring focus:ring-orange-400"
+                required
+                />
+
+                <button type="submit"
+                  className="w-full rounded bg-orange-600 py-1.5 font-semibold text-white transition hover:bg-orange-700 cursor-pointer">
+                  Entrar
                 </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
-  );
+
+            </form>
+            </div>
+
+
+
+        </main>
+      </>
+    )
+  }
+
+  function adminPage(){
+    return (
+      <main className="min-h-screen bg-linear-to-t from-green-200 to-green-100 p-8 text-black">
+        <div className="mx-auto max-w-6xl">
+          <h1 className="mb-6 text-3xl font-bold">
+            Gerenciar Usuários
+          </h1>
+
+          {buscando ? (
+            <p className="text-gray-300">Carregando usuários...</p>
+          ) : usuarios.length === 0 ? (
+            <div className="rounded-lg bg-green-700 p-8 text-center shadow">
+              <p className="text-gray-400">
+                Nenhum usuário cadastrado
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {usuarios.map((usuario) => (
+                <div
+                  key={usuario.id}
+                  className="rounded-lg border border-green-700 bg-green-300 p-4 shadow hover:scale-105 transition-transform hover:shadow-lg"
+                >
+                  <h2 className="text-xl font-bold text-black">{usuario.nome}</h2>
+
+                  <p className="mt-3 text-black">{usuario.email}</p>
+
+                  <button
+                    className="mt-4 w-full rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+                    onClick={() => excluirUsuario(usuario.id)}
+                  >
+                    Excluir
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+    );
+  }
 }
