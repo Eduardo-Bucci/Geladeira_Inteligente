@@ -21,7 +21,7 @@ export default function Carrossel() {
   };
 
   return (
-    <div className="bg-emerald-100 pt-2 relative max-w-md h-full max-h-md mx-auto overflow-hidden rounded-lg shadow-lg hover:shadow-2xl hover:scale-101 transition">
+    <div className="bg-emerald-100 pt-2 relative max-w-md h-full max-h-md w-full mx-auto overflow-hidden rounded-lg shadow-lg hover:shadow-2xl hover:scale-101 transition">
       
       <div 
         className="flex transition-transform duration-500 ease-out "
@@ -39,7 +39,7 @@ export default function Carrossel() {
           </div>
         ))}
       </div>
-      <p className="text-center text-gray-600 mt-4 mb-4">
+            <p className="text-center text-gray-600 mt-4 mb-4">
               Descubra como a EcoFridge pode transformar sua experiência de cozinha!
             </p>
 
