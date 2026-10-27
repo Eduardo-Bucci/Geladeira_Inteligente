@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Check, ListChecks, Plus, Trash2, X } from "lucide-react";
+import { Check, ListChecks, Plus, Trash2, X , ArrowLeft, Leaf } from "lucide-react";
 import {useRouter} from "next/navigation";
 
 type ShoppingItem = {
@@ -58,10 +58,14 @@ export default function Compras() {
 
   return (
     <main className="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-50">
-      <h1 className="text-4xl font-bold mb-6 cursor-pointer text-green-800" onClick={paginaDashboard}>
-        🍃 EcoFridge
-      </h1>
-      <h1 className="text-2xl font-bold text-slate-900"> Lista de Compras </h1>
+      
+      <header className="flex items-center justify-between gap-5">
+          <a href="/dashboard" className="inline-flex items-center gap-2 rounded-full border border-[#e2e8df] bg-white px-4 py-2.5 text-sm font-semibold text-[#466052] transition hover:bg-[#f0f5ed]">
+            <ArrowLeft size={17} /> Voltar ao início
+          </a>
+          <div className="flex items-center gap-2 text-sm font-bold tracking-tight text-[#2d6348]"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#dff0df]"><Leaf size={19} /></span><span className="hidden sm:inline">EcoFridge</span></div>
+      </header>
+      <h1 className="text-2xl font-bold text-slate-900 mt-10"> Lista de Compras </h1>
       <p className="text-slate-500 mb-4"> Organize o que precisa comprar. </p>
 
             <div className="rounded-2xl border border-slate-100 w-4xl bg-white p-5 shadow-sm md:p-6">
