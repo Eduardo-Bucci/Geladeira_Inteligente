@@ -3,7 +3,7 @@ const repository = require("../repository/alimentoRepository.js")
 async function cadastrarCategoriaService(nome){
 
     if(!nome){
-        return codigoStatus = 400, mensagem = "Preencha a lacuna"
+        throw new Error("Digite o nome da categoria para ser cadastrada")
     }
 
     const novaCategoriaService = await repository.cadastrarCategoriaRepo(nome)
@@ -30,7 +30,7 @@ async function excluirCategoriaS(id){
 async function cadastrarAlimentoService(categoria_id, nome, unidade_padrao){
 
     if(!categoria_id || !nome || !unidade_padrao){
-        return codigoStatus = 400, mensagem = "Preencha todas as lacunas"
+        throw new Error("Preencha todas as colunas")
     }
 
     const novoAlimentoService = await repository.cadastrarAlimentoRepo(categoria_id, nome, unidade_padrao)

@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const { rotaUsuario } = require("./routes/userRoutes.js")
 const { rotaAlimento } = require("./routes/alimentoRoutes.js");
+const { rotaFamilia } = require("./routes/familiaRoutes.js")
 
 const { errorHandler } = require("./middlewares/gestorDeErro.js");
 
@@ -15,13 +16,13 @@ app.use(cors())
 
 app.get("/", (req, res) => {
     res.json({
-        mensagem:"API Ligada"
+        mensagem:"Não era para voce estar aqui..."
     })
 })
 
 app.use(rotaUsuario)
-
 app.use(rotaAlimento)
+app.use(rotaFamilia)
 
 app.use(errorHandler)
 
