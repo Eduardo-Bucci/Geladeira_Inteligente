@@ -1,9 +1,11 @@
 require("dotenv").config()
 const express = require("express");
 const cors = require("cors");
-const { rotaUsuario } = require("./routes/userRoutes.js")
-const { errorHandler } = require("./middlewares/gestorDeErro.js");
 
+const { rotaUsuario } = require("./routes/userRoutes.js")
+const { rotaAlimento } = require("./routes/alimentoRoutes.js");
+
+const { errorHandler } = require("./middlewares/gestorDeErro.js");
 
 const app = express();
 const PORT = 3001 || process.env.PORT
@@ -18,6 +20,8 @@ app.get("/", (req, res) => {
 })
 
 app.use(rotaUsuario)
+
+app.use(rotaAlimento)
 
 app.use(errorHandler)
 

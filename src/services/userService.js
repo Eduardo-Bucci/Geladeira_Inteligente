@@ -12,8 +12,8 @@ async function cadastrarUsuarioService(nome, email, senha){
     const novoUsuarioService = await repository.cadastrarUsuarioRepo(nome, email, senhaHash)
 
     return novoUsuarioService
-
 }
+
 
 
 async function LoginUsuarioService(email, senha){
@@ -38,7 +38,6 @@ async function LoginUsuarioService(email, senha){
 async function listarUsuariosService() {
   return await repository.listarUsuariosRepo();
 }
-
 
 
 
