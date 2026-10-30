@@ -14,11 +14,6 @@ async function cadastrarUsuarioController(req, res, next){
 
     } catch (error) {
         next(error)
-        console.error(error)
-        return res.status(500).json({
-            mensagem: "Erro ao cadastrar usuário" + error
-        })
-        
     }
 
 }
@@ -41,12 +36,7 @@ async function loginUsuarioController(req, res, next){
         })
 
     } catch (error) {
-        console.error(error)
-        const codigoStatus = (error.message === "Email não encontrado" || error.message === "Senha inválida") ? 401 : 500
-        
-         return res.status(codigoStatus).json({
-            mensagem: error.message || "Erro interno no servidor de login"
-        })
+        next(error)
     }
 
 }

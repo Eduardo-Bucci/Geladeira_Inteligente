@@ -5,8 +5,10 @@ const cors = require("cors");
 const { rotaUsuario } = require("./routes/userRoutes.js")
 const { rotaAlimento } = require("./routes/alimentoRoutes.js");
 const { rotaFamilia } = require("./routes/familiaRoutes.js")
+const { rotaEstoque } = require("./routes/estoqueRoutes.js");
 
 const { errorHandler } = require("./middlewares/gestorDeErro.js");
+
 
 const app = express();
 const PORT = 3001 || process.env.PORT
@@ -23,6 +25,7 @@ app.get("/", (req, res) => {
 app.use(rotaUsuario)
 app.use(rotaAlimento)
 app.use(rotaFamilia)
+app.use(rotaEstoque)
 
 app.use(errorHandler)
 
