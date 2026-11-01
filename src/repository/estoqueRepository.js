@@ -46,7 +46,11 @@ async function moverHistorico(estoque_id, tipo_movimentacao, quantidade){
 
 async function verHistorico(){
     const sql = `
-        
+        SELECT estoque_alimentos.alimento_id as id_alimento, 
+               estoque_alimentos.validade as validade, 
+               tipo_movimentacao
+        FROM estoque_alimentos
+        INNER JOIN historico_alimentos on historico_alimentos.estoque_id = estoque_alimentos.id;
     `
 
     const [result] = await db.execute(sql)

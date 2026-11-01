@@ -2,8 +2,13 @@ const repository = require("../repository/dashboardRepository.js")
 
 async function dashboardInfoService(){
 
-    const dashboard = await repository.dashboardInfo()
+    const {totalCadastrado, venceBreve} = await repository.dashboardInfo()
 
-    dashboard.quantidadeCadastrado
+    return {totalCadastrado, venceBreve}
     
+}
+
+
+module.exports = {
+    dashboardInfoService
 }

@@ -48,7 +48,8 @@ async function verEstoqueService(){
 
 async function moverHistoricoService(estoque_id, tipo_movimentacao, quantidade){
     if(!tipo_movimentacao || !quantidade){
-        throw new Error("Digite todas as colunas antes de prosseguir")
+        throw new Error("Digite todas as colunas antes de prosseguir", codigoStatus = 404)
+        
     }
 
     const moverHistoricoService = await repository.moverHistorico(estoque_id, tipo_movimentacao, quantidade)

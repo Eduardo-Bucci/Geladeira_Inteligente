@@ -36,6 +36,7 @@ async function moverHistoricoController(req, res, next){
         })
     } catch (error) {
         next(error)
+        
     }
 }
 
