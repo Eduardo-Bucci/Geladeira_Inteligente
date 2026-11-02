@@ -1,7 +1,10 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+
+import { useMemo, useState, useEffect } from "react";
+import { Leaf, Bell, Trash, CalendarDays } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Alimento = {
   id: number;
@@ -12,7 +15,7 @@ type Alimento = {
   validade: string;
 };
 
-{/*tropa, falta sincronizar com a pagina do dashboardo, nao sei fazer isso ainda*/}
+{/*tropa, falta sincronizar com a pagina do dashboard, nao sei fazer isso ainda*/}
 const alimentosIniciais: Alimento[] = [
   { id: 1, nome: "Leite", quantidade: 2, unidade: "unidades", local: "Geladeira", validade: "2026-11-04" },
   { id: 2, nome: "Maçã", quantidade: 6, unidade: "unidades", local: "Geladeira", validade: "2026-11-08" },
@@ -31,6 +34,16 @@ export default function Estoque() {
   const [unidade, setUnidade] = useState("unidades");
   const [local, setLocal] = useState("Geladeira");
   const [validade, setValidade] = useState("");
+
+  const [data, setData] = useState('');
+
+  const Router = useRouter();
+
+  useEffect(() => {
+    // Essa é a parte de atualizar a data atual, para mostrar na tela
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    setData(dataAtual);
+  }, []);
 
   {/*tentando fazer uma parte para começar a contar os dias, mas ta dificil */}
   const hoje = new Date();
@@ -87,38 +100,51 @@ export default function Estoque() {
     setAlimentos((atuais) => atuais.filter((a) => a.id !== id));
   }
 
+  function paginaInicial() {
+    Router.push("/");
+  }
+
+  function notification(){
+    alert("Tem nada, mas pode colocar notificações de alimentos pertos do vencimento");
+  }
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 px-5 py-8">
+    <main className="min-h-screen bg-linear-to-b from-green-50 to-green-100 px-5 py-8 sm:px-10">
+
+      <header className="mb-8 flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><Leaf size={19}/></div>
+          <div>
+            <h1 onClick={paginaInicial} className="text-lg font-extrabold tracking-tight text-slate-900 cursor-pointer">Eco<span className="text-emerald-600">Fridge</span></h1>
+            <p className="text-xs text-slate-400">Organize, aproveite, não desperdice.</p>
+          </div>
+        </div>
+          <div className="gap-1 flex">
+              <a href="/dashboard" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Página inicial </a>
+              <a href="/receitas" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Receitas </a>
+              <a href="/compras" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Lista de compras </a>
+          </div>
+        <button aria-label="Notificações" onClick={notification} className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50">
+          <Bell className="h-5 w-5" /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />
+        </button>
+      </header> 
+
       <div className="mx-auto max-w-7xl">
 
-       
-        <header className="mb-12 flex items-center justify-between rounded-xl border border-gray-100 bg-white px-8 py-5 shadow-sm">
-          <div className="flex items-center gap-4">
-            
-            <div>
-              <h1 className="text-2xl font-extrabold text-slate-950">
-                Eco<span className="text-emerald-600">Fridge</span>
-              </h1>
-            
-            </div>
-          </div>
-
-          <a
-            href="/dashboard"
-            className="rounded-xl border border-gray-100 px-5 py-3 font-semibold text-slate-600 hover:bg-gray-50"
-          >
-            Voltar ao início
-          </a>
-        </header>
 
        
-        <section className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-          <div>
+        <section className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div className="flex flex-col ml-2">
             
+            <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700">              
+              <CalendarDays className="h-4 w-4" /> 
+              <span className="font-semibold">{data || 'Carregando...'}</span> 
+            </p>
+
             <h2 className="text-4xl font-extrabold text-slate-950">
-              Meu Estoque
+              Bem vindo ao seu estoque!
             </h2>
-           
+                      
           </div>
 
           <button
@@ -285,9 +311,10 @@ export default function Estoque() {
                     <button
                       onClick={() => excluirAlimento(alimento.id)}
                       title="Excluir alimento"
-                      className="rounded-xl bg-red-50 px-4 py-3 font-semibold text-red-600 hover:bg-red-100"
+                      className="rounded-xl bg-red-50 px-4 py-3 flex font-semibold text-red-600 hover:bg-red-100"
                     >
-                      Excluir
+                    <Trash className="h-4 w-4" />
+                      
                     </button>
                   </div>
                 </div>

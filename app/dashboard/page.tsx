@@ -1,7 +1,7 @@
 "use client"
 
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Bell,
@@ -63,8 +63,15 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [data, setData] = useState('');
 
   const Router = useRouter();
+  
+  useEffect(() => {
+    // Essa é a parte de atualizar a data atual, para mostrar na tela
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    setData(dataAtual);
+  }, []);
 
   const visibleFoods = useMemo(
     () => foods.filter((food) => food.name.toLowerCase().includes(search.toLowerCase())),
@@ -87,7 +94,7 @@ export default function DashboardPage() {
   }
 
   function notification(){
-    alert("Não tem nada kkk");
+    alert("Sem notificações no momento. Este é um protótipo.");
   }
 
   return (
@@ -101,6 +108,11 @@ export default function DashboardPage() {
               <p className="text-xs text-slate-400">Organize, aproveite, não desperdice.</p>
             </div>
           </div>
+            <div className="gap-1 flex">
+                <a href="/estoque" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Meu estoque </a>
+                <a href="/receitas" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Receitas </a>
+                <a href="/compras" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Lista de compras </a>
+            </div>
           <button aria-label="Notificações" onClick={notification} className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50">
             <Bell className="h-5 w-5" /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />
           </button>
@@ -108,7 +120,7 @@ export default function DashboardPage() {
 
         <section className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700"><CalendarDays className="h-4 w-4" /> Seu resumo de hoje</p>
+            <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700"> <CalendarDays className="h-4 w-4" /> <span className="font-semibold">{data || 'Carregando...'}</span> </p>
             <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Olá {/*Aqui pode colocar o nome do usuário */}! Como está sua cozinha? </h2>
             <p className="mt-2 text-sm text-slate-500">Confira seus alimentos e evite que algo se perca.</p>
           </div>
@@ -117,11 +129,11 @@ export default function DashboardPage() {
           </button>
         </section>
 
-        <section className="mb-6 grid gap-4 w-3xl sm:grid-cols-3">
-          <SummaryCardHome title="Alimentos cadastrados"  value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" 
+        <section className="mb-6 grid gap-4 w-3xl sm:grid-cols-4">
+          <SummaryCard title="Alimentos cadastrados" onClick={() => Router.push("/estoque")} value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" 
           
           />
-          <SummaryCardHome title="Vencem em breve" value={String(foods.filter((food) => food.expiryDays <= 3).length)} note="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} color="amber" />
+          <SummaryCard title="Vencem em breve" onClick={() => Router.push("/estoque")} value={String(foods.filter((food) => food.expiryDays <= 3).length)} note="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} color="amber" />
           <SummaryCard title="Lista de compras" onClick={() => Router.push("/compras")} value="3" note="Itens para comprar" icon={<ShoppingBasket className="h-5 w-5" />} color="sky" />
           <SummaryCard title="Receitas sugeridas" onClick={() => Router.push("/receitas")} value="5" note="Com base nos alimentos" icon={<CookingPot className="h-5 w-5" />} color="emerald" />
         </section>

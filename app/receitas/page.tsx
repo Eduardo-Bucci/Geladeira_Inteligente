@@ -1,10 +1,13 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useRouter } from "next/navigation";
 import {
-  ArrowLeft, Bookmark, Check, ChefHat, Clock3, CookingPot, Search,
-  SlidersHorizontal, Sparkles, Utensils, X, Leaf, AlertCircle, Plus,
+  Bookmark, Check, ChefHat, Clock3, CookingPot, Search,
+  SlidersHorizontal, Sparkles, Utensils, X, AlertCircle, Plus,
+  Bell, Leaf
 } from 'lucide-react';
+
 
 type Ingredient = { name: string; amount: string; available: boolean };
 type Recipe = {
@@ -91,6 +94,8 @@ export default function ReceitasPage() {
   const [prepared, setPrepared] = useState<number[]>([]);
   const [showPreparedMessage, setShowPreparedMessage] = useState(false);
 
+  const Router = useRouter();
+
   const filtered = useMemo(() => recipes.filter((recipe) => {
     const matchesSearch = recipe.title.toLowerCase().includes(search.toLowerCase()) || recipe.ingredients.some((item) => item.name.toLowerCase().includes(search.toLowerCase()));
     const matchesCategory = category === 'Todas' || recipe.category === category;
@@ -100,14 +105,33 @@ export default function ReceitasPage() {
 
   const toggleSaved = (id: number) => setSaved((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
 
+  function paginaInicial() {
+    Router.push("/");
+  }
+
+  function notification(){
+    alert("Sem notificações no momento. Este é um protótipo.");
+  }
+
   return (
     <main className="min-h-screen bg-linear-to-t from-green-200 to-green-50 text-[#20352b]">
       <div className="mx-auto max-w-7xl px-5 py-7 sm:px-8 lg:px-10">
-        <header className="flex items-center justify-between gap-4">
-          <a href="/dashboard" className="inline-flex items-center gap-2 rounded-full border border-[#e2e8df] bg-white px-4 py-2.5 text-sm font-semibold text-[#466052] transition hover:bg-[#f0f5ed]">
-            <ArrowLeft size={17} /> Voltar ao início
-          </a>
-          <div className="flex items-center gap-2 text-sm font-bold tracking-tight text-[#2d6348]"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#dff0df]"><Leaf size={19} /></span><span className="hidden sm:inline">EcoFridge</span></div>
+        <header className="mb-8 flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><Leaf size={19}/></div>
+              <div>
+                <h1 onClick={paginaInicial} className="text-lg font-extrabold tracking-tight text-slate-900 cursor-pointer">Eco<span className="text-emerald-600">Fridge</span></h1>
+                <p className="text-xs text-slate-400">Organize, aproveite, não desperdice.</p>
+              </div>
+            </div>
+              <div className="gap-1 flex">
+                  <a href="/estoque" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Meu estoque </a>
+                  <a href="/dashboard" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Página Inicial </a>
+                  <a href="/compras" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Lista de compras </a>
+              </div>
+            <button aria-label="Notificações" onClick={notification} className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50">
+              <Bell className="h-5 w-5" /><span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500" />
+            </button>
         </header>
 
         <section className="relative mt-8 overflow-hidden rounded-4xl bg-emerald-800 px-6 py-8 text-white sm:px-10 sm:py-11">
@@ -152,15 +176,16 @@ export default function ReceitasPage() {
               <div className="relative h-48 overflow-hidden bg-[#e8eee5]"><img src={recipe.image} alt={recipe.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-[#315e40] shadow-sm">{recipe.category}</div><button aria-label={isSaved ? 'Remover dos favoritos' : 'Salvar receita'} onClick={() => toggleSaved(recipe.id)} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full shadow-sm backdrop-blur transition ${isSaved ? 'bg-[#285c40] text-white' : 'bg-white/95 text-[#476052] hover:bg-white'}`}><Bookmark size={17} fill={isSaved ? 'currentColor' : 'none'} /></button>{recipe.expiring && <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-[#fff3d7] px-3 py-1.5 text-xs font-bold text-[#95631d]"><Leaf size={13} /> Ajuda a evitar desperdício</div>}</div>
               <div className="p-5"><div className="flex items-start justify-between gap-3"><h3 className="text-lg font-bold tracking-tight">{recipe.title}</h3><span className="flex shrink-0 items-center gap-1 text-xs font-semibold text-[#7b887e]"><Clock3 size={14} /> {recipe.time} min</span></div><p className="mt-2 min-h-10 text-sm leading-5 text-[#758177]">{recipe.description}</p><div className="mt-4 flex flex-wrap items-center gap-2 text-xs"><span className="rounded-lg bg-[#edf6eb] px-2.5 py-1.5 font-semibold text-[#39764b]">{available} ingredientes em casa</span>{missing > 0 ? <span className="rounded-lg bg-[#fff3df] px-2.5 py-1.5 font-semibold text-[#a16c24]">Faltam {missing}</span> : <span className="rounded-lg bg-[#edf6eb] px-2.5 py-1.5 font-semibold text-[#39764b]">Tudo disponível</span>}</div><div className="mt-4 flex items-center justify-between border-t border-[#edf0eb] pt-4"><span className="text-xs text-[#78877d]">{recipe.difficulty} <span className="mx-1.5">·</span> {recipe.servings} porções</span><button onClick={() => { setSelected(recipe); setShowPreparedMessage(false); }} className="inline-flex items-center gap-2 rounded-xl bg-[#285c40] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1f4932]">Ver receita <span aria-hidden="true">→</span></button></div></div>
             </article>;
-          })}</div> : <div className="mt-6 rounded-3xl border border-dashed border-[#d6dfd4] bg-white px-6 py-14 text-center"><Search size={28} className="mx-auto text-[#92a092]" /><h3 className="mt-3 font-bold">Nenhuma receita encontrada</h3><p className="mt-1 text-sm text-[#78877d]">Tente mudar a busca ou escolher outra categoria.</p><button onClick={() => { setSearch(''); setCategory('Todas'); setOnlyAvailable(false); }} className="mt-4 rounded-xl bg-[#285c40] px-4 py-2.5 text-sm font-semibold text-white">Limpar filtros</button></div>}
+          })}</div> : <div className="mt-6 rounded-3xl border border-dashed border-[#d6dfd4] bg-green-50 px-6 py-14 text-center"><Search size={28} className="mx-auto text-[#92a092]" /><h3 className="mt-3 font-bold">Nenhuma receita encontrada</h3><p className="mt-1 text-sm text-[#78877d]">Tente mudar a busca ou escolher outra categoria.</p><button onClick={() => { setSearch(''); setCategory('Todas'); setOnlyAvailable(false); }} className="mt-4 rounded-xl bg-[#285c40] px-4 py-2.5 text-sm font-semibold text-white">Limpar filtros</button></div>}
         </section>
 
         <footer className="mt-12 border-t border-[#e4e9e1] py-6 text-center text-xs text-[#8a968c]">EcoFridge <span className="mx-1.5">·</span> Organize. Aproveite. Não desperdice.</footer>
       </div>
 
+          {/**/}
       {selected && <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#10251a]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(e) => { if (e.target === e.currentTarget) setSelected(null); }}><section role="dialog" aria-modal="true" aria-label={`Receita ${selected.title}`} className="max-h-[94vh] w-full max-w-3xl overflow-y-auto rounded-t-4xl bg-[#fbfcf9] shadow-2xl sm:rounded-4xl">
         <div className="relative h-52 sm:h-64"><img src={selected.image} alt={selected.title} className="h-full w-full object-cover" /><div className="absolute inset-0 bg-linear-to-t from-black/55 via-transparent to-black/10" /><button onClick={() => setSelected(null)} aria-label="Fechar" className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/95 text-[#304638] shadow"><X size={19} /></button><div className="absolute bottom-5 left-6 right-6 text-white"><span className="rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold backdrop-blur">{selected.category}</span><h2 className="mt-3 text-2xl font-bold sm:text-3xl">{selected.title}</h2><div className="mt-2 flex flex-wrap gap-4 text-sm text-white/90"><span className="flex items-center gap-1.5"><Clock3 size={15} /> {selected.time} min</span><span className="flex items-center gap-1.5"><ChefHat size={16} /> {selected.difficulty}</span><span className="flex items-center gap-1.5"><Utensils size={15} /> {selected.servings} porções</span></div></div></div>
-        <div className="grid gap-8 p-6 sm:grid-cols-[0.85fr_1.15fr] sm:p-8"><div><h3 className="text-lg font-bold">Ingredientes</h3><p className="mt-1 text-sm text-[#78877d]">Confira o que já tem em casa.</p><ul className="mt-4 space-y-3">{selected.ingredients.map((ingredient) => <li key={ingredient.name} className="flex items-start gap-3 text-sm"><span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full ${ingredient.available ? 'bg-[#e3f2e2] text-[#347448]' : 'bg-[#fff0d8] text-[#a56b1d]'}`}>{ingredient.available ? <Check size={13} /> : <Plus size={13} />}</span><span className="min-w-0 flex-1"><span className="font-semibold">{ingredient.name}</span><span className="block text-xs text-[#879187]">{ingredient.amount}</span></span><span className={`text-[11px] font-semibold ${ingredient.available ? 'text-[#438153]' : 'text-[#a56b1d]'}`}>{ingredient.available ? 'Tenho' : 'Falta'}</span></li>)}</ul><div className="mt-5 rounded-2xl bg-[#edf5e9] p-4"><p className="text-sm font-bold text-[#356546]">Dica Geladeira Viva</p><p className="mt-1 text-xs leading-5 text-[#5d7b63]">Se algum ingrediente estiver faltando, você pode adaptar a receita com o que já tem disponível.</p></div></div><div><h3 className="text-lg font-bold">Modo de preparo</h3><ol className="mt-4 space-y-4">{selected.steps.map((step, index) => <li key={step} className="flex gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#dfeede] text-xs font-bold text-[#326644]">{index + 1}</span><p className="pt-1 text-sm leading-6 text-[#58685d]">{step}</p></li>)}</ol><button onClick={() => { setPrepared((current) => current.includes(selected.id) ? current : [...current, selected.id]); setShowPreparedMessage(true); }} className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#285c40] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#1f4932]"><Check size={17} /> Já preparei essa receita</button>{showPreparedMessage && <p className="mt-3 rounded-xl bg-[#e8f5e6] p-3 text-sm font-medium text-[#347448]">Receita marcada como preparada! Na versão conectada à API, você poderá registrar o consumo dos ingredientes no estoque.</p>}</div></div>
+        <div className="grid gap-8 p-6 sm:grid-cols-[0.85fr_1.15fr] sm:p-8"><div><h3 className="text-lg font-bold">Ingredientes</h3><p className="mt-1 text-sm text-[#78877d]">Confira o que já tem em casa.</p><ul className="mt-4 space-y-3">{selected.ingredients.map((ingredient) => <li key={ingredient.name} className="flex items-start gap-3 text-sm"><span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full ${ingredient.available ? 'bg-[#e3f2e2] text-[#347448]' : 'bg-[#fff0d8] text-[#a56b1d]'}`}>{ingredient.available ? <Check size={13} /> : <Plus size={13} />}</span><span className="min-w-0 flex-1"><span className="font-semibold">{ingredient.name}</span><span className="block text-xs text-[#879187]">{ingredient.amount}</span></span><span className={`text-[11px] font-semibold ${ingredient.available ? 'text-[#438153]' : 'text-[#a56b1d]'}`}>{ingredient.available ? 'Tenho' : 'Falta'}</span></li>)}</ul><div className="mt-5 rounded-2xl bg-[#edf5e9] p-4"><p className="text-sm font-bold text-[#356546]">Dica Geladeira Viva</p><p className="mt-1 text-xs leading-5 text-[#5d7b63]">Se algum ingrediente estiver faltando, você pode adaptar a receita com o que já tem disponível.</p></div></div><div><h3 className="text-lg font-bold">Modo de preparo</h3><ol className="mt-4 space-y-4">{selected.steps.map((step, index) => <li key={step} className="flex gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#dfeede] text-xs font-bold text-[#326644]">{index + 1}</span><p className="pt-1 text-sm leading-6 text-[#58685d]">{step}</p></li>)}</ol><button onClick={() => { setPrepared((current) => current.includes(selected.id) ? current : [...current, selected.id]); setShowPreparedMessage(true); }} className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#285c40] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#1f4932]"><Check size={17} /> Já preparei essa receita</button>{showPreparedMessage && <p className="mt-3 rounded-xl bg-[#e8f5e6] p-3 text-sm font-medium text-[#347448]"> Quando apertar esse botão os ingredientes da receitas vão ser apagados da geladeira virtual </p>}</div></div>
       </section></div>}
     </main>
   );
