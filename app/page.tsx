@@ -97,9 +97,8 @@ export default function Home() {
             </header>
 
 
-
-      <main className="grid grid-cols-5 md:grid-cols-1 max-w-screen flex-col min-h-100 max-h-200 items-center 
-      justify-center bg-linear-to-b from-green-100 to-green-50">
+              {/*troquei essa linha toda para ajeitar o espaçamento */}
+      <main className="w-full max-w-full overflow-x-hidden flex flex-col min-h-screen bg-linear-to-b from-green-100 to-green-50">
 
 
   

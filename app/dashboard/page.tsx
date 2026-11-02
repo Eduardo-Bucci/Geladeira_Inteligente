@@ -118,7 +118,9 @@ export default function DashboardPage() {
         </section>
 
         <section className="mb-6 grid gap-4 w-3xl sm:grid-cols-3">
-          <SummaryCardHome title="Alimentos cadastrados" value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" />
+          <SummaryCardHome title="Alimentos cadastrados"  value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" 
+          
+          />
           <SummaryCardHome title="Vencem em breve" value={String(foods.filter((food) => food.expiryDays <= 3).length)} note="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} color="amber" />
           <SummaryCard title="Lista de compras" onClick={() => Router.push("/compras")} value="3" note="Itens para comprar" icon={<ShoppingBasket className="h-5 w-5" />} color="sky" />
           <SummaryCard title="Receitas sugeridas" onClick={() => Router.push("/receitas")} value="5" note="Com base nos alimentos" icon={<CookingPot className="h-5 w-5" />} color="emerald" />
