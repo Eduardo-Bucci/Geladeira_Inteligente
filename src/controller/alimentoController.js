@@ -13,10 +13,6 @@ async function cadastrarCategoriaController(req, res, next){
 
     } catch (error) {
         next(error)
-        console.error(error)
-        return res.status(500).json({
-            mensagem: "Erro ao cadastrar categoria" + error
-        })
     }
 }
 
@@ -26,8 +22,7 @@ async function listarCategoriasController(req, res, next){
         const categorias = await service.listarCategoriasService()
         return res.status(201).json(categorias)
     } catch (error) {
-        console.error("Erro ao listar", error)
-        return next(error)
+        next(error)
     }
 }
 
@@ -48,8 +43,7 @@ async function excluirCategoriaController(req, res, next){
             mensagem: "A categoria foi excluida com sucesso!"
         })
     } catch (error) {
-        console.error(error)
-        return next(error)
+        next(error)
     }
     
 
@@ -69,10 +63,6 @@ async function cadastrarAlimentoController(req, res, next){
 
     } catch (error) {
         next(error)
-        console.log(error)
-        return res.status(500).json({
-            mensagem: "Erro ao cadastrar o alimento" + error
-        })
     }
 }
 
@@ -81,7 +71,6 @@ async function listarAlimentosController(req, res, next){
         const alimentos = await service.listarAlimentosService()
         return res.status(201).json(alimentos)
     } catch (error) {
-        console.error("Erro ao listar", error)
         return next(error)
     }
 }
@@ -102,8 +91,7 @@ async function excluirAlimentoController(req, res, next){
             mensagem: "Alimento excluído com êxito!"
         })
     } catch (error) {
-        console.error(error)
-        return next(error)
+        next(error)
     }
     
 }
