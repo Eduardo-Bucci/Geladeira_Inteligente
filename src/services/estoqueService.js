@@ -2,7 +2,7 @@ const repository = require("../repository/estoqueRepository.js")
 
 async function cadastrarEstoqueService(familia_id, alimento_id, quantidade, validade, custo_total, estado){
 
-    if(!familia_id, !alimento_id, !quantidade, !validade, !custo_total){
+    if(!familia_id || !alimento_id || !quantidade || !validade || !custo_total){
         throw new Error("Informe todas as colunas antes de cadastrar!")
     }
 
@@ -46,13 +46,12 @@ async function verEstoqueService(){
     return await repository.verEstoque()
 }
 
-async function moverHistoricoService(estoque_id, tipo_movimentacao, quantidade){
-    if(!tipo_movimentacao || !quantidade){
+async function moverHistoricoService(quantidade, custo_total, idE, tipo_movimentacao){
+    if(!quantidade || !custo_total || !idE || !tipo_movimentacao){
         throw new Error("Digite todas as colunas antes de prosseguir", codigoStatus = 404)
-        
     }
 
-    const moverHistoricoService = await repository.moverHistorico(estoque_id, tipo_movimentacao, quantidade)
+    const moverHistoricoService = await repository.moverHistorico(quantidade, custo_total, idE, tipo_movimentacao)
 
     return moverHistoricoService
 }

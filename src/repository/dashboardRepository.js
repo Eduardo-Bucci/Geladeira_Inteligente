@@ -2,8 +2,8 @@ const db = require("../config/database.js")
 
 async function dashboardInfo(){
     const sql = `
-        SELECT COUNT(*) as total FROM estoque_alimentos;
-        SELECT COUNT(*) as totalVence FROM estoque_alimentos WHERE estado = ?;
+        SELECT COUNT(*) as total FROM estoque_alimentos WHERE ativo = 1;
+        SELECT COUNT(*) as totalVence FROM estoque_alimentos WHERE estado = ? AND ativo = 1;
     `
 
     const [results] = await db.query(sql, ["Vence em breve"]) 

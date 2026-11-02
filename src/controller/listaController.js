@@ -1,14 +1,15 @@
+const { adicionarItemLista } = require("../repository/listaRepository.js")
 const service = require("../services/listaService.js")
 
-async function adicionarListaController(req, res, next){
+async function adicionarUmaListaController(req, res, next){
     try {
-        const {} = req.body
+        const {familia_id, nome} = req.body
 
-        const novoItemLista = await service.adicionarListaService()
+        const novaLista = await service.adicionarUmaListaService(familia_id, nome)
 
         return res.status(201).json({
-            mensagem: "Item adicionado com sucesso",
-            data: novoItemLista
+            mensagem: "Lista criada com suceso",
+            data: novaLista
         })
     } catch (error) {
         next(error)
@@ -36,9 +37,24 @@ async function atualizarListaController(req, res, next){
     }
 }
 
+async function adicionarItemListaController(req, res, next){
+    try {
+        const {lista_id, alimento_id, quantidade, unidade, comprado} = req.body
+
+        const novoItem = await service.adicionarItemListaService(lista_id, alimento_id, quantidade, unidade, comprado)
+
+        return res.status(201).json({
+            mensagem: "Item adicionado a lista com sucesso!",
+            data: novoItem
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 module.exports = {
-    adicionarListaController,
+    adicionarUmaListaController,
     verListaController,
-    atualizarListaController
+    atualizarListaController,
+    adicionarItemListaController
 }

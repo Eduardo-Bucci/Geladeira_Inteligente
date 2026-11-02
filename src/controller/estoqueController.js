@@ -26,9 +26,9 @@ async function verEstoqueController(req, res, next){
 
 async function moverHistoricoController(req, res, next){
     try {
-        const {estoque_id, tipo_movimentacao, quantidade} = req.body
+        const {quantidade, custo_total, idE, tipo_movimentacao} = req.body
 
-        const movido = await service.moverHistoricoService(estoque_id, tipo_movimentacao, quantidade)
+        const movido = await service.moverHistoricoService(quantidade, custo_total, idE, tipo_movimentacao)
 
         return res.status(200).json({
             mensagem: "Movimentação concluída",
