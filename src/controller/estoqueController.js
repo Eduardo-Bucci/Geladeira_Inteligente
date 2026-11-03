@@ -24,6 +24,26 @@ async function verEstoqueController(req, res, next){
     }
 }
 
+async function excluirItemEstoqueController(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({
+        mensagem: "ID inválido",
+      });
+    }
+
+    await service.excluirItemEstoqueService(id);
+
+    return res.status(200).json({
+      mensagem: "Usuário excluído com sucesso",
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 async function moverHistoricoController(req, res, next){
     try {
         const {quantidade, custo_total, idE, tipo_movimentacao} = req.body
@@ -55,4 +75,5 @@ module.exports = {
     verEstoqueController,
     moverHistoricoController,
     verHistoricoController,
+    excluirItemEstoqueController
 }

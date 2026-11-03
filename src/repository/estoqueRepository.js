@@ -22,7 +22,13 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
 
 async function verEstoque(){
     const sql = `
-        SELECT * FROM estoque_alimentos
+        SELECT alimentos.nome as nome, 
+               estoque_alimentos.validade, 
+               estoque_alimentos.quantidade,
+               estoque_alimentos.custo_total,
+               estoque_alimentos.estado
+        FROM alimentos
+        INNER JOIN estoque_alimentos on estoque_alimentos.alimento_id = alimentos.id
         where ativo = 1;
     ` 
 
@@ -87,11 +93,22 @@ async function verHistorico(){
     return result
 }
 
+async function excluirItemEstoque(id){
+    const sql = `
+        DELETE FROM estoque_alimentos
+        WHERE id = ?
+    `
+
+    const [resultado] = await db.execute(sql, [id])
+
+    return resultado.affectedRows
+}
+
 
 module.exports = {
     cadastrarEstoque,
     verEstoque,
     moverHistorico,
-    verHistorico
-
+    verHistorico,
+    excluirItemEstoque
 }
