@@ -9,6 +9,7 @@ const db = mysql.createPool({
     ssl: {
         rejectUnauthorized: true
     },
+    multipleStatements: true,
     waitForConnections:true,
     connectionLimit: 10,
     queueLimit: 0

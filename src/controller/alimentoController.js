@@ -69,7 +69,7 @@ async function cadastrarAlimentoController(req, res, next){
 async function listarAlimentosController(req, res, next){
     try {
         const alimentos = await service.listarAlimentosService()
-        return res.status(201).json(alimentos)
+        return res.status(200).json(alimentos)
     } catch (error) {
         return next(error)
     }
