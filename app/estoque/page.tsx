@@ -125,9 +125,9 @@ export default function Estoque() {
         })
     }
   }
+  
+  async function excluirAlimento(id: any) {
 
-  //Algo de errado não esta certo aqui, mas a rota ta funcionando
-  async function excluirAlimento(id: number) {
     const resultado = await Swal.fire({
       title: "Excluir Alimento?",
       text: "Essa opção não poderá ser desfeita",
@@ -144,33 +144,33 @@ export default function Estoque() {
     try {
       const response = await fetch(
         `http://localhost:3001/estoque/${id}`,
-        { method: "DELETE" }
+        { method: 'DELETE' }
       );
 
       if (!response.ok) {
         const erro = await response.text();
         console.error("Erro HTTP:", response.status, erro);
-        throw new Error("Erro ao excluir alimento");
+        throw Error("Erro ao excluir alimento");
       }
 
-      setAlimentos((atuais) => atuais.filter((a) => a.id !== id));
+      setAlimentos((atuais) => atuais.filter((alimento) => alimento.id !== id));
 
       await Swal.fire({
-              title: "Excluído!",
-              text: "O alimento foi excluído com sucesso",
-              icon: "success",
-              confirmButtonText: "Ok",
-            });
+        title: "Excluído!",
+        text: "O alimento foi excluído com sucesso",
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
   }
     catch(error){
       console.error("Erro ao excluir usuário:", error);
       
-            await Swal.fire({
-              title: "Erro",
-              text: "Não foi possível excluir o usuário. Confira se a rota DELETE /estoque/:id existe.",
-              icon: "error",
-              confirmButtonText: "Ok",
-            });
+      await Swal.fire({
+        title: "Erro",
+        text: "Não foi possível excluir o usuário. Confira se a rota DELETE /estoque/:id existe.",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
 }
 
