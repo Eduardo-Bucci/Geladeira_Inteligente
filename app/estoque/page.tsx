@@ -1,59 +1,79 @@
-
 "use client";
-
 
 import { useMemo, useState, useEffect } from "react";
 import { Leaf, Bell, Trash, CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2"
 
 type Alimento = {
   id: number;
   nome: string;
-  quantidade: number;
-  unidade: string;
-  local: string;
   validade: string;
+  quantidade: string;
+  custo_total: string;
+  estado: string;
 };
 
-{/*tropa, falta sincronizar com a pagina do dashboard, nao sei fazer isso ainda*/}
-const alimentosIniciais: Alimento[] = [
-  { id: 1, nome: "Leite", quantidade: 2, unidade: "unidades", local: "Geladeira", validade: "2026-11-04" },
-  { id: 2, nome: "Maçã", quantidade: 6, unidade: "unidades", local: "Geladeira", validade: "2026-11-08" },
-  { id: 3, nome: "Frango", quantidade: 1, unidade: "kg", local: "Freezer", validade: "2026-11-20" },
-  { id: 4, nome: "Arroz", quantidade: 2, unidade: "kg", local: "Despensa", validade: "2027-03-15" },
-];
-
 export default function Estoque() {
-  const [alimentos, setAlimentos] = useState(alimentosIniciais);
+  const [alimentos, setAlimentos] = useState<Alimento[]>([]);
   const [pesquisa, setPesquisa] = useState("");
   const [filtro, setFiltro] = useState("Todos");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   const [nome, setNome] = useState("");
-  const [quantidade, setQuantidade] = useState("1");
-  const [unidade, setUnidade] = useState("unidades");
-  const [local, setLocal] = useState("Geladeira");
   const [validade, setValidade] = useState("");
+  const [quantidade, setQuantidade] = useState("0");
+  const [custo_total, setCusto_total] = useState("0");
+  const [estado, setEstado] = useState("");
 
   const [data, setData] = useState('');
 
   const Router = useRouter();
 
-  useEffect(() => {
-    // Essa é a parte de atualizar a data atual, para mostrar na tela
-    const dataAtual = new Date().toLocaleDateString('pt-BR');
-    setData(dataAtual);
+   useEffect(() => {
+    const hoje = new Date();
+    setData(hoje.toLocaleDateString('pt-BR'));
   }, []);
 
-  {/*tentando fazer uma parte para começar a contar os dias, mas ta dificil */}
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
+  async function buscarEstoque(){
 
-  const diasAteVencer = (data: string) => {
-    const vencimento = new Date(data + "T00:00:00");
-    return Math.ceil(
-      (vencimento.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    try {
+      const response = await fetch("http://localhost:3001/estoque")
+
+      if(!response.ok){
+        const erro = await response.text()
+        console.error("Erro HTTP ", response.status, erro)
+        throw new Error("Erro ao buscar estoque")
+      }
+
+      const data = await response.json()
+      
+      setAlimentos(Array.isArray (data) ? data : data.data ?? [])
+    } catch (error) {
+      console.error("Erro ao buscar usuário ", error)
+
+      await Swal.fire({
+              title: "Erro",
+              text: "Não foi possível carregar o estoque. Confira se o servidor está ligado e se a rota GET /usuarios existe.",
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+    }
+  }
+
+  useEffect(() => {
+    buscarEstoque()
+  }, []);
+
+   const formatarData = (dataString: string) => {
+    if (!dataString) return "";
+    try {
+      const data = new Date(dataString); 
+      data.setMinutes(data.getMinutes() + data.getTimezoneOffset());
+      return data.toLocaleDateString('pt-BR');
+    } catch {
+      return dataString;
+    }
   };
 
   const alimentosFiltrados = useMemo(() => {
@@ -62,43 +82,97 @@ export default function Estoque() {
         .toLowerCase()
         .includes(pesquisa.toLowerCase());
 
-      const correspondeLocal =
-        filtro === "Todos" || alimento.local === filtro;
+     const correspondeLocal =
+        filtro === "Todos" || alimento.estado === filtro;
 
       return correspondeNome && correspondeLocal;
     });
   }, [alimentos, pesquisa, filtro]);
 
-  const proximosVencimento = alimentos.filter(
-    (a) => diasAteVencer(a.validade) >= 0 &&
-           diasAteVencer(a.validade) <= 3
-  ).length;
+  //Falta colocar ele ligado ao botao também
+  async function adicionarAlimento() {
+  
+    try {
+      const response = await fetch(`http://localhost:3001/cadastroEstoque`, {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+        //familia_id, {Esse vai vir com o JWT, so vai funcionar com a adição dele}
+        //alimento_id, {Esse vou ter que fazer algumas alterações tambem}
+          quantidade,
+          validade,
+          custo_total
+        })
+      })
 
-  function adicionarAlimento(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (!nome.trim() || !validade || Number(quantidade) <= 0) return;
-
-    const novoAlimento: Alimento = {
-      id: Date.now(),
-      nome: nome.trim(),
-      quantidade: Number(quantidade),
-      unidade,
-      local,
-      validade,
-    };
-
-    setAlimentos((atuais) => [...atuais, novoAlimento]);
-
-    setNome("");
-    setQuantidade("1");
-    setValidade("");
-    setMostrarFormulario(false);
+      if(response.ok){
+        await Swal.fire({
+          title:"Tudo certo!",
+          text:"Seu alimento foi adicionado ao estoque com sucesso!",
+          icon:"success",
+          confirmButtonText:"Ok"
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      await Swal.fire({
+          title:"Algo deu errado",
+          text:"Infelizmente algo deu errado em nossos servidores, aguarde um momento e tente novamente",
+          icon:"error",
+          confirmButtonText:"Ok"
+        })
+    }
   }
 
-  function excluirAlimento(id: number) {
-    setAlimentos((atuais) => atuais.filter((a) => a.id !== id));
+  //Algo de errado não esta certo aqui, mas a rota ta funcionando
+  async function excluirAlimento(id: number) {
+    const resultado = await Swal.fire({
+      title: "Excluir Alimento?",
+      text: "Essa opção não poderá ser desfeita",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+    });
+
+    if (!resultado.isConfirmed) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/estoque/${id}`,
+        { method: "DELETE" }
+      );
+
+      if (!response.ok) {
+        const erro = await response.text();
+        console.error("Erro HTTP:", response.status, erro);
+        throw new Error("Erro ao excluir alimento");
+      }
+
+      setAlimentos((atuais) => atuais.filter((a) => a.id !== id));
+
+      await Swal.fire({
+              title: "Excluído!",
+              text: "O alimento foi excluído com sucesso",
+              icon: "success",
+              confirmButtonText: "Ok",
+            });
   }
+    catch(error){
+      console.error("Erro ao excluir usuário:", error);
+      
+            await Swal.fire({
+              title: "Erro",
+              text: "Não foi possível excluir o usuário. Confira se a rota DELETE /estoque/:id existe.",
+              icon: "error",
+              confirmButtonText: "Ok",
+            });
+    }
+}
 
   function paginaInicial() {
     Router.push("/");
@@ -107,7 +181,7 @@ export default function Estoque() {
   function notification(){
     alert("Tem nada, mas pode colocar notificações de alimentos pertos do vencimento");
   }
-
+  
   return (
     <main className="min-h-screen bg-linear-to-b from-green-50 to-green-100 px-5 py-8 sm:px-10">
 
@@ -159,7 +233,7 @@ export default function Estoque() {
         {/* ai vai adicionar alimento */}
         {mostrarFormulario && (
           <form
-            onSubmit={adicionarAlimento}
+           // onSubmit={adicionarAlimento}
             className="mb-8 rounded-3xl border border-gray-100 bg-white p-7 shadow-sm"
           >
             <h3 className="mb-6 text-xl font-bold text-slate-900">
@@ -186,8 +260,8 @@ export default function Estoque() {
               />
 
               <select
-                value={unidade}
-                onChange={(e) => setUnidade(e.target.value)}
+                value={custo_total}
+                onChange={(e) => setCusto_total(e.target.value)}
                 className="rounded-xl border border-gray-200 p-3"
               >
                 <option>unidades</option>
@@ -198,8 +272,8 @@ export default function Estoque() {
               </select>
 
               <select
-                value={local}
-                onChange={(e) => setLocal(e.target.value)}
+                value={estado}
+                onChange={(e) => setEstado(e.target.value)}
                 className="rounded-xl border border-gray-200 p-3"
               >
                 <option>Geladeira</option>
@@ -271,8 +345,6 @@ export default function Estoque() {
 
           <div className="space-y-3">
             {alimentosFiltrados.map((alimento) => {
-              const dias = diasAteVencer(alimento.validade);
-
               return (
                 <div
                   key={alimento.id}
@@ -283,29 +355,17 @@ export default function Estoque() {
                       {alimento.nome}
                     </h4>
                     <p className="mt-1 text-sm text-slate-500">
-                      {alimento.quantidade} {alimento.unidade} · {alimento.local}
+                      Quantidade: {alimento.quantidade} ; Valor: R${alimento.custo_total}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between gap-5">
+                  <div className="flex items-center justify-center gap-5">
                     <div>
                       <p className="text-xs text-slate-400">Validade</p>
-                      <p className="font-semibold text-slate-700">
-                        {new Date(alimento.validade + "T00:00:00").toLocaleDateString("pt-BR")}
-                      </p>
-                      <span className={`text-xs font-semibold ${
-                        dias < 0
-                          ? "text-red-600"
-                          : dias <= 3
-                          ? "text-amber-600"
-                          : "text-emerald-600"
-                      }`}>
-                        {dias < 0
-                          ? "Vencido"
-                          : dias === 0
-                          ? "Vence hoje"
-                          : `Vence em ${dias} dias`}
-                      </span>
+
+                      <p className="font-semibold text-slate-700 ml-auto">{formatarData(alimento.validade)}</p>
+                      <p className="mt-1 text-sm text-slate-500"> {alimento.estado} </p>
+                       
                     </div>
 
                     <button

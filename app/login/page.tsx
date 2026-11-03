@@ -82,7 +82,7 @@ export default function Login() {
 
   return (
     <main className ="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-50">
-            <h1 onClick={paginaInicial} className="font-bold text-5xl text-green-800 mb-7"> EcoFridge </h1>
+            <h1 onClick={paginaInicial} className="font-bold text-5xl text-green-800 mb-7 transition hover:text-green-700 cursor-pointer"> EcoFridge </h1>
             <div className="w-full max-w-md rounded-md bg-green-50 p-8 shadow-lg border-green-700 border">
                 <h1 className="text-center mb-8 font-bold text-2xl text-green-700">Login</h1>
 
@@ -117,9 +117,6 @@ export default function Login() {
 
                 </button>
 
-
-
-
                 <button type="submit"
                  className="w-full rounded bg-orange-600 py-1.5 font-semibold text-white transition hover:bg-orange-700 cursor-pointer">
                   Entrar
@@ -128,7 +125,7 @@ export default function Login() {
             </form>
 
             <a href="/cadastro" className="mt-4 block text-center text-sm text-green-800 hover:underline">
-              Não possui conta? Cadastre-se
+              Não possui conta? Cadastre-se!
             </a>
             </div>
 
