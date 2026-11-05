@@ -2,10 +2,6 @@ const repository = require("../repository/estoqueRepository.js")
 
 async function cadastrarEstoqueService(familia_id, alimento_id, quantidade, validade, custo_total, estado){
 
-    if(!familia_id || !alimento_id || !quantidade || !validade || !custo_total){
-        throw new Error("Informe todas as colunas antes de cadastrar!")
-    }
-
     const data = new Date()
 
     const dataValidade = new Date(validade)

@@ -22,7 +22,8 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
 
 async function verEstoque(){
     const sql = `
-        SELECT alimentos.nome as nome, 
+        SELECT estoque_alimentos.id as id,
+               alimentos.nome as nome, 
                estoque_alimentos.validade, 
                estoque_alimentos.quantidade,
                estoque_alimentos.custo_total,
