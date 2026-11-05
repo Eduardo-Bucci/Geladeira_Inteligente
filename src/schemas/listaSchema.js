@@ -13,7 +13,10 @@ const adicionarItemListaSchema = z.object({
     comprado: z.coerce.boolean()
 })
 
+const updateListaSchema = adicionarItemListaSchema.partial()
+
 module.exports = {
     adicionarUmaListaSchema,
-    adicionarItemListaSchema
+    adicionarItemListaSchema,
+    updateListaSchema
 }

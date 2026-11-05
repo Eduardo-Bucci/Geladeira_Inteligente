@@ -1,3 +1,4 @@
+const { no } = require("zod/locales")
 const { adicionarItemLista } = require("../repository/listaRepository.js")
 const service = require("../services/listaService.js")
 
@@ -27,7 +28,10 @@ async function verListaController(req, res, next){
 
 async function atualizarListaController(req, res, next){
     try {
-        const atualizar = await service.verListaService()
+        const { id } = req.params
+        const novosDados = req.body
+
+        const atualizar = await service.atualizarListaService(id, novosDados)
         return res.status(200).json({
             mensagem: "Informação alterada com sucesso",
             data: atualizar

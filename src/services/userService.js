@@ -1,5 +1,6 @@
 const repository = require("../repository/userRepository.js")
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
 async function cadastrarUsuarioService(nome, email, senha){
 
@@ -15,18 +16,34 @@ async function cadastrarUsuarioService(nome, email, senha){
 async function LoginUsuarioService(email, senha){
 
     const login = await repository.LoginRepo(email)
-
     if(!login){
         throw new Error("Email não encontrado")
     }
 
     const verifySenha = await bcrypt.compare(senha, login.senha)
-
     if(!verifySenha){
         throw new Error("Senha inválida")
     }
 
-    return login
+    const { pivo, usuario_id } = await repository.validacaoToken()
+    
+    const familia_id = pivo.length > 0 ? pivo[0].familia_id : null
+
+    const token = jwt.sign(
+        {
+            userId: usuario_id,
+            familyId: familia_id
+        },
+
+        process.env.JWT_SECRET,
+        {expiresIn: "4h"}
+    )
+
+    return {
+        mensagem: "Login realizado com sucesso!",
+        token: token,
+        login
+    }
 }
 
 
