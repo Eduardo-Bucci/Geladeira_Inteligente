@@ -1,10 +1,10 @@
 const db = require("../config/database.js")
 
-async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, custo_total, estado){
+async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, custo_total, estado, local_armazenamento){
 
     const sql = `
-        INSERT INTO estoque_alimentos (familia_id, alimento_id, quantidade, validade, custo_total, estado) 
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO estoque_alimentos (familia_id, alimento_id, quantidade, validade,custo_total, estado, local_armazenamento)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `
 
     const [result] = await db.execute(sql, [
@@ -13,7 +13,8 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
         quantidade, 
         validade, 
         custo_total, 
-        estado
+        estado,
+        local_armazenamento
     ])
 
     return { id: result.insertId}
@@ -22,8 +23,20 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
 
 async function verEstoque(){
     const sql = `
-        SELECT * FROM estoque_alimentos
-        where ativo = 1;
+        SELECT
+            estoque_alimentos.id AS id,
+            alimentos.id AS alimento_id,
+            alimentos.nome AS nome,
+            alimentos.unidade_padrao AS unidade,
+            estoque_alimentos.validade,
+            estoque_alimentos.quantidade,
+            estoque_alimentos.custo_total,
+            estoque_alimentos.estado,
+            estoque_alimentos.local_armazenamento
+        FROM alimentos
+        INNER JOIN estoque_alimentos
+            ON estoque_alimentos.alimento_id = alimentos.id
+        WHERE estoque_alimentos.ativo = 1;
     ` 
 
     const [result] = await db.execute(sql)
@@ -87,11 +100,22 @@ async function verHistorico(){
     return result
 }
 
+async function excluirItemEstoque(id){
+    const sql = `
+        DELETE FROM estoque_alimentos
+        WHERE id = ?
+    `
+
+    const [resultado] = await db.execute(sql, [id])
+
+    return resultado.affectedRows
+}
+
 
 module.exports = {
     cadastrarEstoque,
     verEstoque,
     moverHistorico,
-    verHistorico
-
+    verHistorico,
+    excluirItemEstoque
 }

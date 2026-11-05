@@ -46,6 +46,16 @@ async function verEstoqueService(){
     return await repository.verEstoque()
 }
 
+async function excluirItemEstoqueService(id){
+    const resultado = await repository.excluirItemEstoque(id)
+
+    if(id === 0){
+        throw new Error("Alimento não encontrado")
+    }
+
+    return resultado
+}
+
 async function moverHistoricoService(quantidade, custo_total, idE, tipo_movimentacao){
     if(!quantidade || !custo_total || !idE || !tipo_movimentacao){
         throw new Error("Digite todas as colunas antes de prosseguir", codigoStatus = 404)
@@ -60,9 +70,11 @@ async function verHistoricoService(){
     return await repository.verHistorico()
 }
 
+
 module.exports = {
     cadastrarEstoqueService,
     verEstoqueService,
     moverHistoricoService,
-    verHistoricoService
+    verHistoricoService,
+    excluirItemEstoqueService
 }

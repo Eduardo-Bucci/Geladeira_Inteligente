@@ -61,6 +61,6 @@ async function excluirUsuarioRepo(id) {
 module.exports = {
     cadastrarUsuarioRepo,
     LoginRepo,
-     listarUsuariosRepo,
+    listarUsuariosRepo,
     excluirUsuarioRepo
 }
