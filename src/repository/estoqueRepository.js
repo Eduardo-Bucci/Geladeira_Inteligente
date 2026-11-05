@@ -23,16 +23,12 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
 
 async function verEstoque(){
     const sql = `
-        SELECT
-            estoque_alimentos.id AS id,
-            alimentos.id AS alimento_id,
-            alimentos.nome AS nome,
-            alimentos.unidade_padrao AS unidade,
-            estoque_alimentos.validade,
-            estoque_alimentos.quantidade,
-            estoque_alimentos.custo_total,
-            estoque_alimentos.estado,
-            estoque_alimentos.local_armazenamento
+        SELECT estoque_alimentos.id as id,
+               alimentos.nome as nome, 
+               estoque_alimentos.validade, 
+               estoque_alimentos.quantidade,
+               estoque_alimentos.custo_total,
+               estoque_alimentos.estado
         FROM alimentos
         INNER JOIN estoque_alimentos
             ON estoque_alimentos.alimento_id = alimentos.id

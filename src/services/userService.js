@@ -3,10 +3,6 @@ const bcrypt = require("bcrypt")
 
 async function cadastrarUsuarioService(nome, email, senha){
 
-    if(!nome || !email || !senha){
-        return codigoStatus = 400, mensagem = "Preencha todas os dados"
-    }
-
     const senhaHash = await bcrypt.hash(senha, 10)
 
     const novoUsuarioService = await repository.cadastrarUsuarioRepo(nome, email, senhaHash)
