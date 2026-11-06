@@ -34,7 +34,9 @@ async function cadastrarUsuarioFamiliaController(req, res, next){
 
 async function listarUsuariosFamiliaController(req, res, next){
     try {
-        const UsuariosFamilia = await service.listarUsuariosFamiliaService()
+        const { familyId } = req.user
+        
+        const UsuariosFamilia = await service.listarUsuariosFamiliaService(familyId)
         return res.status(200).json(UsuariosFamilia)
     } catch (error) {
         next(error)

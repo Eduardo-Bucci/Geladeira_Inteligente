@@ -22,8 +22,8 @@ async function cadastrarUsuarioFamiliaService(familia_id, usuario_id, papel){
     return novoUsuarioFamilia
 }
 
-async function listarUsuariosFamiliaService(){
-    return await repository.listarUsuariosFamilia()
+async function listarUsuariosFamiliaService(familyId){
+    return await repository.listarUsuariosFamilia(familyId)
 }
 
 

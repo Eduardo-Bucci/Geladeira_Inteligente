@@ -1,4 +1,3 @@
-const { object } = require("zod")
 const db = require("../config/database.js")
 
 async function adicionarUmaLista(familia_id, nome){

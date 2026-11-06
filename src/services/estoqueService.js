@@ -1,6 +1,6 @@
 const repository = require("../repository/estoqueRepository.js")
 
-async function cadastrarEstoqueService(familia_id, alimento_id, quantidade, validade, custo_total, estado){
+async function cadastrarEstoqueService(familyId, alimento_id, quantidade, validade, custo_total, estado){
 
     const data = new Date()
 
@@ -33,13 +33,15 @@ async function cadastrarEstoqueService(familia_id, alimento_id, quantidade, vali
 
     const dataCerta = dataValidade.toISOString().substring(0, 10)
 
-    const novoEstoqueService = await repository.cadastrarEstoque(familia_id, alimento_id, quantidade, dataCerta, custo_total, novoEstado)
+    const novoEstoqueService = await repository.cadastrarEstoque(familyId, alimento_id, quantidade, dataCerta, custo_total, novoEstado)
 
     return novoEstoqueService
 }
 
-async function verEstoqueService(){
-    return await repository.verEstoque()
+async function verEstoqueService(familyId){
+
+
+    return await repository.verEstoque(familyId)
 }
 
 async function excluirItemEstoqueService(id){
@@ -62,8 +64,8 @@ async function moverHistoricoService(quantidade, custo_total, idE, tipo_moviment
     return moverHistoricoService
 }
 
-async function verHistoricoService(){
-    return await repository.verHistorico()
+async function verHistoricoService(familyId){
+    return await repository.verHistorico(familyId)
 }
 
 

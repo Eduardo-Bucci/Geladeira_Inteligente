@@ -28,7 +28,7 @@ async function cadastrarUsuarioFamilia(familia_id, usuario_id, papel){
     return { userID: result.familia_id}
 }
 
-async function listarUsuariosFamilia(){
+async function listarUsuariosFamilia(familyId){
 
     const sql = `
         SELECT familias.nome as nome_familia, 
@@ -36,10 +36,11 @@ async function listarUsuariosFamilia(){
         papel
         FROM familias
         INNER JOIN familia_usuarios on familias.id = familia_usuarios.familia_id
-        INNER JOIN usuarios on familia_usuarios.usuario_id = familia_usuarios.usuario_id;
+        INNER JOIN usuarios on familia_usuarios.usuario_id = usuarios.id
+        WHERE familia_id = ?;
     `
 
-    const [result] = await db.execute(sql)
+    const [result] = await db.execute(sql, [familyId])
 
     return result
 }

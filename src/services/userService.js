@@ -25,14 +25,14 @@ async function LoginUsuarioService(email, senha){
         throw new Error("Senha inválida")
     }
 
-    const { pivo, usuario_id } = await repository.validacaoToken()
+    const { pivo, usuario_id } = await repository.validacaoToken(login.id)
     
-    const familia_id = pivo.length > 0 ? pivo[0].familia_id : null
+    const familyId = pivo.length > 0 ? pivo[0].familia_id : null
 
     const token = jwt.sign(
         {
             userId: usuario_id,
-            familyId: familia_id
+            familyId: familyId
         },
 
         process.env.JWT_SECRET,
@@ -41,8 +41,8 @@ async function LoginUsuarioService(email, senha){
 
     return {
         mensagem: "Login realizado com sucesso!",
-        token: token,
-        login
+        usuario: { id: login.id, nome: login.nome, email: login.email},
+        token: token
     }
 }
 

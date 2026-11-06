@@ -2,18 +2,19 @@ const { Router } = require("express")
 const controller = require("../controller/estoqueController.js")
 const { validate } = require("../middlewares/validator.js")
 const { estoqueSchema } = require("../schemas/estoqueSchema.js")
+const { authMiddleware, requireFamily } = require("../middlewares/auth.js")
 
 const rotaEstoque = Router()
 
-rotaEstoque.post("/cadastroEstoque", validate(estoqueSchema), controller.cadastrarEstoqueController)
+rotaEstoque.post("/cadastroEstoque", authMiddleware, requireFamily, validate(estoqueSchema), controller.cadastrarEstoqueController)
 
-rotaEstoque.get("/estoque", controller.verEstoqueController)
+rotaEstoque.get("/estoque", authMiddleware, requireFamily, controller.verEstoqueController)
 
 rotaEstoque.delete("/estoque/:id", controller.excluirItemEstoqueController)
 
 rotaEstoque.post("/moverHistorico", controller.moverHistoricoController)
 
-rotaEstoque.get("/historico", controller.verHistoricoController)
+rotaEstoque.get("/historico", authMiddleware, requireFamily, controller.verHistoricoController)
 
 
 module.exports = {

@@ -8,6 +8,7 @@ function authMiddleware(req, res, next){
         erro.codigoStatus = 401
         throw erro
     }
+    
 
     const token = authHeader.split(" ")[1]
 
@@ -16,8 +17,8 @@ function authMiddleware(req, res, next){
         const decodificado = jwt.verify(token, process.env.JWT_SECRET)
 
         req.user = {
-            id: decodificado.usuario_id,
-            familyId: decodificado.familia_id
+            id: decodificado.userId,
+            familyId: decodificado.familyId
         }
 
         return next()
@@ -26,12 +27,13 @@ function authMiddleware(req, res, next){
     }
 }
 
-function requireFamily(res, res, next){
+function requireFamily(req, res, next){
 
-    if(!req.user || !req.user.familia_id){
-        const erro = new Error("Acesso negado: Voce precisa entrar ou criar uma familia primeiro")
-        erro.codigoStatus = 403
-        throw erro
+    if(!req.user || !req.user.familyId){
+       return res.status(403).json({
+            status: "Error",
+            mensagem: "Acesso negado: Você precisa entrar ou criar uma família primeiro."
+        });
     }
     return next()
 }
