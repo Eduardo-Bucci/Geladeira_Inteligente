@@ -3,8 +3,9 @@ const service = require("../services/familiaService.js")
 async function cadastrarFamiliaController(req, res, next){
     try {
         const {nome} = req.body
+        const { id: userId } = req.user
 
-        const novaFamilia = await service.cadastrarFamiliaService(nome)
+        const novaFamilia = await service.cadastrarFamiliaService(userId, nome)
 
         return res.status(201).json({
             mensagem: "Família criada com sucesso!",
@@ -18,13 +19,20 @@ async function cadastrarFamiliaController(req, res, next){
 
 async function cadastrarUsuarioFamiliaController(req, res, next){
     try {
-        const {familia_id, usuario_id, papel} = req.body
+        
+        const { id: userId } = req.user
+        const {codigo_convite} = req.body
+        
+        if(!codigo_convite){
+            return res.status(400).json({ mensagem: "O código de convite é obrigatório." });
+        }
 
-        const novoUsuarioFamilia = await service.cadastrarUsuarioFamiliaService(familia_id, usuario_id, papel)
+        const novoUsuarioFamilia = await service.aceitarConvite(userId, codigo_convite)
 
         return res.status(201).json({
-            mensagem:"Relação usuário-família estabelecida com sucesso!",
-            data: novoUsuarioFamilia
+            mensagem:"Voce entrou na família com sucesso!",
+            data: novoUsuarioFamilia,
+            token: novoUsuarioFamilia.token
         })
 
     } catch (error) {

@@ -9,7 +9,6 @@ function authMiddleware(req, res, next){
         throw erro
     }
     
-
     const token = authHeader.split(" ")[1]
 
     try {

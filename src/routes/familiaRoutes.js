@@ -6,9 +6,9 @@ const { authMiddleware, requireFamily } = require("../middlewares/auth.js")
 
 const rotaFamilia = Router()
 
-rotaFamilia.post("/cadastroFamilias", validate(familiaSchema), controller.cadastrarFamiliaController)
+rotaFamilia.post("/cadastroFamilias", authMiddleware, validate(familiaSchema), controller.cadastrarFamiliaController)
 
-rotaFamilia.post("/cadastroUsuarioFamilia", validate(familiaUsuariosSchema), controller.cadastrarUsuarioFamiliaController)
+rotaFamilia.post("/familias/entrar", authMiddleware, validate(familiaUsuariosSchema), controller.cadastrarUsuarioFamiliaController)
 
 rotaFamilia.get("/usuariosFamilia", authMiddleware, requireFamily, controller.listarUsuariosFamiliaController)
 

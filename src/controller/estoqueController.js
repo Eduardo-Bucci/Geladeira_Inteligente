@@ -2,12 +2,14 @@ const service = require("../services/estoqueService.js")
 
 async function cadastrarEstoqueController(req, res, next){
     try {
-        const {alimento_id, quantidade, validade, custo_total, estado} = req.body
+        const {nome_alimento, nome_categoria, unidade_padrao, quantidade, validade, custo_total, estado} = req.body
         const { familyId } = req.user
 
-        const novoEstoque = await service.cadastrarEstoqueService(familyId, alimento_id, quantidade, validade, custo_total, estado)
+        const dados = { nome_alimento, nome_categoria, unidade_padrao, quantidade, validade, custo_total, estado }
 
-        return res.status(201).json({
+        const novoEstoque = await service.cadastrarEstoqueService(familyId, dados)
+
+       return res.status(201).json({
             mensagem: "Novo lote cadastrado com sucesso!",
             data: novoEstoque
         })
