@@ -20,6 +20,7 @@ export default function Estoque() {
   const [filtro, setFiltro] = useState("Todos");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
+  
   const [nome, setNome] = useState("");
   const [validade, setValidade] = useState("");
   const [quantidade, setQuantidade] = useState("0");
@@ -90,8 +91,10 @@ export default function Estoque() {
   }, [alimentos, pesquisa, filtro]);
 
   //Falta colocar ele ligado ao botao também
-  async function adicionarAlimento() {
+  async function adicionarAlimento(e: React.FormEvent<HTMLFormElement>) {
   
+    e.preventDefault();
+
     try {
       const response = await fetch(`http://localhost:3001/cadastroEstoque`, {
         method:"POST",
@@ -99,8 +102,8 @@ export default function Estoque() {
           "Content-Type":"application/json"
         },
         body: JSON.stringify({
-        //familia_id, {Esse vai vir com o JWT, so vai funcionar com a adição dele}
-        //alimento_id, {Esse vou ter que fazer algumas alterações tambem}
+          //familia_id, {Esse vai vir com o JWT, so vai funcionar com a adição dele}
+          //alimento_id, // {Esse vou ter que fazer algumas alterações tambem}
           quantidade,
           validade,
           custo_total
@@ -161,8 +164,8 @@ export default function Estoque() {
         icon: "success",
         confirmButtonText: "Ok",
       });
-  }
-    catch(error){
+
+    }catch(error){
       console.error("Erro ao excluir usuário:", error);
       
       await Swal.fire({
@@ -194,7 +197,7 @@ export default function Estoque() {
           </div>
         </div>
           <div className="gap-1 flex">
-              <a href="/dashboard" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Página inicial </a>
+              <a href="/dashboard" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Dashboard </a>
               <a href="/receitas" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Receitas </a>
               <a href="/compras" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Lista de compras </a>
           </div>
@@ -233,7 +236,7 @@ export default function Estoque() {
         {/* ai vai adicionar alimento */}
         {mostrarFormulario && (
           <form
-           // onSubmit={adicionarAlimento}
+            onSubmit={adicionarAlimento}
             className="mb-8 rounded-3xl border border-gray-100 bg-white p-7 shadow-sm"
           >
             <h3 className="mb-6 text-xl font-bold text-slate-900">

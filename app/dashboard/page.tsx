@@ -130,9 +130,7 @@ export default function DashboardPage() {
         </section>
 
         <section className="mb-6 grid gap-4 w-3xl sm:grid-cols-4">
-          <SummaryCard title="Alimentos cadastrados" onClick={() => Router.push("/estoque")} value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" 
-          
-          />
+          <SummaryCard title="Alimentos cadastrados" onClick={() => Router.push("/estoque")} value={String(foods.length)} note="No seu estoque" icon={<Refrigerator className="h-5 w-5" />} color="emerald" />
           <SummaryCard title="Vencem em breve" onClick={() => Router.push("/estoque")} value={String(foods.filter((food) => food.expiryDays <= 3).length)} note="Nos próximos 3 dias" icon={<Clock3 className="h-5 w-5" />} color="amber" />
           <SummaryCard title="Lista de compras" onClick={() => Router.push("/compras")} value="3" note="Itens para comprar" icon={<ShoppingBasket className="h-5 w-5" />} color="sky" />
           <SummaryCard title="Receitas sugeridas" onClick={() => Router.push("/receitas")} value="5" note="Com base nos alimentos" icon={<CookingPot className="h-5 w-5" />} color="emerald" />
@@ -148,7 +146,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </section>
-
+        
         {/*Seção onde ficam os alimentos pode adicionar um botão de excluir para quando forem consumidos*/}
         <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">

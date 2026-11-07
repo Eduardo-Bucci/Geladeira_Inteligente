@@ -11,9 +11,7 @@ type ShoppingItem = {
 };
 
 const initialShopping: ShoppingItem[] = [
-  { id: 1, name: "Arroz", checked: false },
-  { id: 2, name: "Azeite de oliva", checked: true },
-  { id: 3, name: "Bananas", checked: false },
+  
 ];
 
 export default function Compras() {
@@ -68,7 +66,7 @@ export default function Compras() {
       <h1 className="text-2xl font-bold text-slate-900 mt-10"> Lista de Compras </h1>
       <p className="text-slate-500 mb-4"> Organize o que precisa comprar. </p>
 
-            <div className="rounded-2xl border border-slate-100 w-4xl bg-white p-5 shadow-sm md:p-6">
+            <div className="rounded-2xl border border-slate-100 max-w-4xl w-full bg-white p-5 shadow-sm md:p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
 

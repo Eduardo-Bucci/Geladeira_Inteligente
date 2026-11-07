@@ -126,7 +126,7 @@ export default function ReceitasPage() {
             </div>
               <div className="gap-1 flex">
                   <a href="/estoque" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Meu estoque </a>
-                  <a href="/dashboard" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Página Inicial </a>
+                  <a href="/dashboard" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Dashboard </a>
                   <a href="/compras" className="rounded-xl text-sm px-4 py-2 font-semibold text-slate-600 hover:bg-emerald-50"> Lista de compras </a>
               </div>
             <button aria-label="Notificações" onClick={notification} className="relative rounded-xl border border-slate-100 p-2.5 text-slate-500 hover:bg-slate-50">
