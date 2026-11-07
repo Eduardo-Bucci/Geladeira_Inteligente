@@ -34,6 +34,17 @@ async function LoginRepo(email){
 
 }
 
+async function validacaoToken(usuario_id){
+
+    const sql = `
+        SELECT familia_id FROM familia_usuarios WHERE usuario_id = ? LIMIT 1
+    `
+
+    const [pivo] = await db.execute(sql, [usuario_id])
+
+    return {pivo, usuario_id}
+}
+
 
 async function listarUsuariosRepo() {
     const sql = `
@@ -61,6 +72,7 @@ async function excluirUsuarioRepo(id) {
 module.exports = {
     cadastrarUsuarioRepo,
     LoginRepo,
+    validacaoToken,
     listarUsuariosRepo,
     excluirUsuarioRepo
 }

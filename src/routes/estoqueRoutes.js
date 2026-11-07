@@ -1,21 +1,40 @@
-const { Router } = require("express")
-const controller = require("../controller/estoqueController.js")
-const { validate } = require("../middlewares/validator.js")
-const { estoqueSchema } = require("../schemas/estoqueSchema.js")
+const { Router } = require("express");
 
-const rotaEstoque = Router()
+const controller = require("../controller/estoqueController.js");
 
-rotaEstoque.post("/cadastroEstoque", validate(estoqueSchema), controller.cadastrarEstoqueController)
+const {
+    authMiddleware,
+    requireFamily
+} = require("../middlewares/auth.js");
 
-rotaEstoque.get("/estoque", controller.verEstoqueController)
+const rotaEstoque = Router();
 
-rotaEstoque.delete("/estoque/:id", controller.excluirItemEstoqueController)
+rotaEstoque.use(authMiddleware);
+rotaEstoque.use(requireFamily);
 
-rotaEstoque.post("/moverHistorico", controller.moverHistoricoController)
+rotaEstoque.post(
+    "/cadastroEstoque",
+    controller.cadastrarEstoqueController
+);
 
-rotaEstoque.get("/historico", controller.verHistoricoController)
+rotaEstoque.get(
+    "/estoque",
+    controller.verEstoqueController
+);
 
+rotaEstoque.delete(
+    "/estoque/:id",
+    controller.excluirItemEstoqueController
+);
 
-module.exports = {
-    rotaEstoque,
-}
+rotaEstoque.post(
+    "/moverHistorico",
+    controller.moverHistoricoController
+);
+
+rotaEstoque.get(
+    "/historico",
+    controller.verHistoricoController
+);
+
+module.exports = { rotaEstoque };

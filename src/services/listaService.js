@@ -17,10 +17,19 @@ async function verListaService(){
     return listaService
 }
 
-async function atualizarListaService(){
-    const atualizarService = await repository.atualizarLista()
+async function atualizarListaService(id, novosDados){
 
-    return atualizarService
+    const itemExiste = await repository.existe(id)
+
+    if(!itemExiste){
+        const erro = new Error("O item não existe!")
+        erro.codigoStatus = 404
+        throw erro
+    }
+
+    const itemAtualizado = await repository.update(id, novosDados)
+
+    return {data: itemAtualizado}
 }
 
 async function adicionarItemListaService(lista_id, alimento_id, quantidade, unidade, comprado){

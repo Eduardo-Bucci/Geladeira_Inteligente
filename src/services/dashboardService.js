@@ -1,8 +1,8 @@
 const repository = require("../repository/dashboardRepository.js")
 
-async function dashboardInfoService(){
+async function dashboardInfoService(familyId){
 
-    const {totalCadastrado, venceBreve} = await repository.dashboardInfo()
+    const {totalCadastrado, venceBreve} = await repository.dashboardInfo(familyId)
 
     return {totalCadastrado, venceBreve}
     

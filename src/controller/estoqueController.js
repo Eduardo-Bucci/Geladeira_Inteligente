@@ -2,9 +2,10 @@ const service = require("../services/estoqueService.js")
 
 async function cadastrarEstoqueController(req, res, next){
     try {
-        const {familia_id, alimento_id, quantidade, validade, custo_total, estado} = req.body
+        const {alimento_id, quantidade, validade, custo_total, estado, local_armazenamento} = req.body
+        const { familyId } = req.user
 
-        const novoEstoque = await service.cadastrarEstoqueService(familia_id, alimento_id, quantidade, validade, custo_total, estado)
+        const novoEstoque = await service.cadastrarEstoqueService(familyId, alimento_id, quantidade, validade, custo_total, estado, local_armazenamento)
 
         return res.status(201).json({
             mensagem: "Novo lote cadastrado com sucesso!",
@@ -17,7 +18,9 @@ async function cadastrarEstoqueController(req, res, next){
 
 async function verEstoqueController(req, res, next){
     try {
-        const estoque = await service.verEstoqueService()
+        const { familyId } = req.user
+
+        const estoque = await service.verEstoqueService(familyId)
         return res.status(200).json(estoque)
     } catch (error) {
         next(error)
@@ -34,7 +37,8 @@ async function excluirItemEstoqueController(req, res, next) {
       });
     }
 
-    await service.excluirItemEstoqueService(id);
+    const { familyId } = req.user;
+    await service.excluirItemEstoqueService(id, familyId);
 
     return res.status(200).json({
       mensagem: "Usuário excluído com sucesso",
@@ -62,7 +66,9 @@ async function moverHistoricoController(req, res, next){
 
 async function verHistoricoController(req, res, next){
     try {
-        const historico = await service.verHistoricoService()
+        const { familyId } = req.user
+
+        const historico = await service.verHistoricoService(familyId)
         return res.status(200).json(historico)
     } catch (error) {
         next(error)

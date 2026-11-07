@@ -33,8 +33,9 @@ async function loginUsuarioController(req, res, next){
 
         return res.status(200).json({
             mensagem: "Bem vindo de volta " + email,
+            token: loginController.token,
+            usuario: loginController.usuario
         })
-
     } catch (error) {
         next(error)
     }

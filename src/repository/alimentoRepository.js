@@ -52,13 +52,14 @@ async function cadastrarAlimentoRepo(categoria_id, nome, unidade_padrao){
 
 async function listarAlimentosRepo(){
     const sql = `
-        SELECT categoria_id, nome, unidade_padrao
+        SELECT id, categoria_id, nome, unidade_padrao
         FROM alimentos
         ORDER BY nome ASC
-    `
+    `;
 
-    const [alimento] = await db.execute(sql)
-    return alimento
+    const [alimentos] = await db.execute(sql);
+
+    return alimentos;
 }
 
 

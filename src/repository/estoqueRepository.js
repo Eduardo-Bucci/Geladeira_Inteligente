@@ -1,6 +1,6 @@
 const db = require("../config/database.js")
 
-async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, custo_total, estado, local_armazenamento){
+async function cadastrarEstoque(familyId, alimento_id, quantidade, validade, custo_total, estado, local_armazenamento){
 
     const sql = `
         INSERT INTO estoque_alimentos (familia_id, alimento_id, quantidade, validade,custo_total, estado, local_armazenamento)
@@ -8,7 +8,7 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
     `
 
     const [result] = await db.execute(sql, [
-        familia_id, 
+        familyId, 
         alimento_id, 
         quantidade, 
         validade, 
@@ -21,23 +21,28 @@ async function cadastrarEstoque(familia_id, alimento_id, quantidade, validade, c
 
 }
 
-async function verEstoque(){
+async function verEstoque(familyId) {
     const sql = `
-        SELECT estoque_alimentos.id as id,
-               alimentos.nome as nome, 
-               estoque_alimentos.validade, 
-               estoque_alimentos.quantidade,
-               estoque_alimentos.custo_total,
-               estoque_alimentos.estado
-        FROM alimentos
-        INNER JOIN estoque_alimentos
-            ON estoque_alimentos.alimento_id = alimentos.id
-        WHERE estoque_alimentos.ativo = 1;
-    ` 
+        SELECT
+            ea.id,
+            a.id AS alimento_id,
+            a.nome,
+            a.unidade_padrao AS unidade,
+            ea.quantidade,
+            ea.validade,
+            ea.custo_total,
+            ea.estado,
+            ea.local_armazenamento
+        FROM estoque_alimentos ea
+        INNER JOIN alimentos a
+            ON ea.alimento_id = a.id
+        WHERE ea.ativo = 1
+        AND ea.familia_id = ?;
+    `;
 
-    const [result] = await db.execute(sql)
+    const [result] = await db.execute(sql, [familyId]);
 
-    return result
+    return result;
 }
 
 async function moverHistorico(quantidade, custo_total, idE, tipo_movimentacao){
@@ -47,8 +52,8 @@ async function moverHistorico(quantidade, custo_total, idE, tipo_movimentacao){
         await conexao.beginTransaction()
 
         const sql1 = `
-            INSERT INTO historico_alimentos (estoque_id, quantidade, custo, tipo_movimentacao)
-            SELECT id, ?, ?, ?
+            INSERT INTO historico_alimentos (estoque_id, familia_id, quantidade, custo, tipo_movimentacao)
+            SELECT id, familia_id, ?, ?, ?
             FROM estoque_alimentos 
             WHERE id = ?;
         `
@@ -75,10 +80,11 @@ async function moverHistorico(quantidade, custo_total, idE, tipo_movimentacao){
     }
 }
 
-async function verHistorico(){
+async function verHistorico(familyId){
 
     const sql = `
         SELECT * FROM historico_alimentos
+        WHERE familia_id = ?
     `
 
     /*const sql = `
@@ -91,18 +97,18 @@ async function verHistorico(){
 
     `*/
 
-    const [result] = await db.execute(sql)
+    const [result] = await db.execute(sql, [familyId])
 
     return result
 }
 
-async function excluirItemEstoque(id){
+async function excluirItemEstoque(id, familyId){
     const sql = `
         DELETE FROM estoque_alimentos
-        WHERE id = ?
+        WHERE id = ? AND familia_id = ?;
     `
 
-    const [resultado] = await db.execute(sql, [id])
+    const [resultado] = await db.execute(sql, [id, familyId])
 
     return resultado.affectedRows
 }
