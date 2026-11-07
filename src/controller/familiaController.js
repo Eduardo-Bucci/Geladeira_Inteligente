@@ -32,7 +32,6 @@ async function cadastrarUsuarioFamiliaController(req, res, next){
         return res.status(201).json({
             mensagem:"Voce entrou na família com sucesso!",
             data: novoUsuarioFamilia,
-            token: novoUsuarioFamilia.token
         })
 
     } catch (error) {

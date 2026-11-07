@@ -4,13 +4,19 @@ const jwt = require("jsonwebtoken")
 
 async function cadastrarFamiliaService(userId, nome){
 
+    if (!userId) {
+        const erro = new Error("Não foi possível identificar o usuário logado. Faça login novamente.");
+        erro.codigoStatus = 401;
+        throw erro;
+    }
+
     const codigo_convite = crypto.randomBytes(3).toString("hex").toUpperCase()
 
     const novaFamiliaService = await repository.cadastrarFamilia(nome, codigo_convite)
     
     console.log(userId, nome, novaFamiliaService.id, codigo_convite)
 
-    await repository.cadastrarUsuarioFamilia(userId, novaFamiliaService.id, "Dono")
+    await repository.cadastrarUsuarioFamilia(novaFamiliaService.id, userId, "Dono")
 
     return {familia: novaFamiliaService, codigo_convite}
 }
@@ -18,6 +24,8 @@ async function cadastrarFamiliaService(userId, nome){
 async function aceitarConvite(userId, codigo_convite){
 
     const familia = await repository.buscarPorCodigo(codigo_convite)
+
+    console.log("--> CÓDIGO QUE CHEGOU NO SERVICE:", { codigo_convite });
     
     if(!familia){
         const erro = new Error("Código de convite inválido ou expirado.");
@@ -25,7 +33,9 @@ async function aceitarConvite(userId, codigo_convite){
         throw erro;
     }
 
-    const jaPertence = await repository.vereficarMembro(userId, familia.id)
+    const familiaId = familia.id || familia[0]?.id
+
+    const jaPertence = await repository.vereficarMembro(userId, familiaId)
 
     if(jaPertence){
         const erro = new Error("Você já faz parte desta família.");

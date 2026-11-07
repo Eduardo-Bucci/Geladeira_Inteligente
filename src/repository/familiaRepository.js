@@ -34,7 +34,7 @@ async function vereficarMembro(userId, familyId){
     `
     const [result] = await db.execute(sql, [userId, familyId])
 
-    return result.lenght > 0
+    return result.length > 0
 }
 
 async function buscarPorCodigo(codigo_convite){
@@ -43,7 +43,7 @@ async function buscarPorCodigo(codigo_convite){
     `
     const [result] = await db.execute(sql, [codigo_convite])
 
-    return result.lenght > 0 ? length[0] : null
+    return result.length > 0 ? result[0] : null
 }
 
 async function listarUsuariosFamilia(familyId){
