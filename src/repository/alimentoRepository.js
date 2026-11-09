@@ -35,20 +35,19 @@ async function excluirCategoria(id){
 }
 
 
-async function cadastrarAlimentoRepo(categoria_id, nome, unidade_padrao){
+async function cadastrarAlimentoRepo(novoAlimento){
     const sql = `
         INSERT INTO alimentos (categoria_id, nome, unidade_padrao) VALUES (?, ?, ?)
     `
 
     const [result] = await db.execute(sql, [
-        categoria_id,
-        nome, 
-        unidade_padrao
+        novoAlimento.categoria_id,
+        novoAlimento.nome, 
+        novoAlimento.unidade_padrao
     ])
 
     return { id: result.insertId}
 }
-
 
 async function listarAlimentosRepo(){
     const sql = `
@@ -74,6 +73,26 @@ async function excluirAlimento(id){
     return result.affectedRows
 }
 
+async function buscarAlimentoPorNome(nome){
+    const sql = `
+        SELECT id FROM alimentos WHERE nome = ? LIMIT 1; 
+    `
+
+    const [result] = await db.execute(sql, [nome])
+
+    return result.length > 0 ? result : null
+}
+
+async function buscarCategoriaPorNome(nome){
+    const sql = `
+        SELECT id FROM alimentos WHERE nome = ? LIMIT 1; 
+    `
+
+    const [result] = await db.execute(sql, [nome])
+
+    return result.insertId
+}
+
 
 module.exports = {
     cadastrarCategoriaRepo,
@@ -81,5 +100,7 @@ module.exports = {
     listarAlimentosRepo,
     listarCategoriaRepo,
     excluirCategoria,
-    excluirAlimento
+    excluirAlimento,
+    buscarAlimentoPorNome,
+    buscarCategoriaPorNome
 }

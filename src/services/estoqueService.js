@@ -1,39 +1,73 @@
 const repository = require("../repository/estoqueRepository.js")
+const alimentosRepository = require("../repository/alimentoRepository.js")
+require('dotenv').config();
 
-async function cadastrarEstoqueService(familyId, alimento_id, quantidade, validade, custo_total, estado, local_armazenamento){
+async function cadastrarEstoqueService(familyId, dados){
 
+    ////////// LÓGICA DA VALIDADE //////////////
     const data = new Date()
+    data.setHours(0, 0, 0, 0)
 
-    const dataValidade = new Date(validade)
+    const dataValidade = new Date(dados.validade)
+    dataValidade.setHours(0, 0, 0, 0)
 
     const diferencaMs = dataValidade - data
 
     const diferencaDia = diferencaMs / (1000 * 60 * 60 * 24)
 
-    let novoEstado = estado
+    let novoEstado = dados.estado
 
-    if(diferencaDia >= 30){
-        novoEstado = "Longe do vencimento"
-    }
-    else if(diferencaDia <= 30 && diferencaDia > 15){
-        novoEstado = "Menos de um mês para vencer"
-    }
-    else if(diferencaDia <= 15 && diferencaDia > 7){
-        novoEstado = "Menos de duas semanas para vencer"
-    }
-    else if(diferencaDia <= 7 && diferencaDia > 3){
-        novoEstado = "Menos de uma semana para vencer"
-    }
-    else if(diferencaDia <= 3 && diferencaDia >= 0){
-        novoEstado = "Vence em breve"
-    }
-    else{
-        novoEstado = "vencido"
-    }
+    if(diferencaDia >= 30){novoEstado = "Longe do vencimento"}
+    else if(diferencaDia <= 30 && diferencaDia > 15){novoEstado = "Menos de um mês para vencer"} 
+    else if(diferencaDia <= 15 && diferencaDia > 7){novoEstado = "Menos de duas semanas para vencer"}
+    else if(diferencaDia <= 7 && diferencaDia > 3){novoEstado = "Menos de uma semana para vencer"}
+    else if(diferencaDia <= 3 && diferencaDia >= 0){novoEstado = "Vence em breve"}
+    else{novoEstado = "vencido"}
 
     const dataCerta = dataValidade.toISOString().substring(0, 10)
+    /////////////////////////////////////////////
 
-    const novoEstoqueService = await repository.cadastrarEstoque(familyId, alimento_id, quantidade, dataCerta, custo_total, novoEstado)
+    let resultadoAlimento = await alimentosRepository.buscarAlimentoPorNome(dados.nome_alimento.trim())
+    let alimentoId = null
+
+    if(resultadoAlimento){
+        alimentoId = resultadoAlimento.id || resultadoAlimento[0]?.id
+    }
+
+    else{
+        let resultadoCategoria = await alimentosRepository.buscarCategoriaPorNome(dados.nome_categoria.trim())
+        let categoriaId = null
+
+        if(resultadoCategoria){
+            categoriaId = resultadoCategoria.id || resultadoCategoria[0]?.id
+        }
+        else{
+            const novaCategoriaId = await alimentosRepository.cadastrarCategoriaRepo(dados.nome_categoria.trim())
+            categoriaId = novaCategoriaId.id || novaCategoriaId
+        }
+
+        const novoAlimento = {
+            categoria_id: categoriaId,
+            nome: dados.nome_alimento.trim(),
+            unidade_padrao: dados.unidade_padrao || "un"
+        }
+
+        const retornoNovoAlimento = await alimentosRepository.cadastrarAlimentoRepo(novoAlimento)
+        alimentoId = retornoNovoAlimento.id 
+    }
+    
+    const itemEstoque = {
+        familyId: familyId,
+        alimento_id: alimentoId,
+        quantidade: dados.quantidade,
+        dataCerta: dataCerta,
+        custo_total: dados.custo_total,
+        novoEstado: novoEstado 
+    }
+
+    console.log( itemEstoque )
+
+    const novoEstoqueService = await repository.cadastrarEstoque(itemEstoque)
 
     return novoEstoqueService
 }

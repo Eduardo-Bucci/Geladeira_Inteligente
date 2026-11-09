@@ -1,25 +1,49 @@
 const repository = require("../repository/familiaRepository.js")
+const crypto = require("crypto")
+const jwt = require("jsonwebtoken")
 
-async function cadastrarFamiliaService(nome){
+async function cadastrarFamiliaService(userId, nome) {
 
-    const novaFamiliaService = await repository.cadastrarFamilia(nome)
-
-    return novaFamiliaService
-}
-
-async function cadastrarUsuarioFamiliaService(familia_id, usuario_id, papel){
-
-    if(familia_id === 0){
-        throw new Error("Não há nenhuma família cadastrada com esse ID")
+    if (!userId) {
+        const erro = new Error(
+            "Não foi possível identificar o usuário logado. Faça login novamente."
+        );
+        erro.codigoStatus = 401;
+        throw erro;
     }
 
-    if(usuario_id === 0){
-        throw new Error("Não há nenhum usuário cadastrado com esse ID")
-    }
+    const codigo_convite = crypto.randomBytes(3)
+        .toString("hex")
+        .toUpperCase();
 
-    const novoUsuarioFamilia = await repository.cadastrarUsuarioFamilia(familia_id, usuario_id, papel)
+    // Cria a família
+    const novaFamiliaService = await repository.cadastrarFamilia(
+        nome,
+        codigo_convite
+    );
 
-    return novoUsuarioFamilia
+    // Vincula o usuário como dono
+    await repository.cadastrarUsuarioFamilia(
+        novaFamiliaService.id,
+        userId,
+        "Dono"
+    );
+
+    // Gera um novo token com o familyId
+    const novoToken = jwt.sign(
+        {
+            userId: userId,
+            familyId: novaFamiliaService.id
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "4h" }
+    );
+
+    return {
+        familia: novaFamiliaService,
+        codigo_convite,
+        token: novoToken
+    };
 }
 
 async function listarUsuariosFamiliaService(familyId){
@@ -29,6 +53,6 @@ async function listarUsuariosFamiliaService(familyId){
 
 module.exports = {
     cadastrarFamiliaService,
-    cadastrarUsuarioFamiliaService,
+    aceitarConvite,
     listarUsuariosFamiliaService,
 }

@@ -1,6 +1,6 @@
 const db = require("../config/database.js")
 
-async function cadastrarEstoque(familyId, alimento_id, quantidade, validade, custo_total, estado, local_armazenamento){
+async function cadastrarEstoque(itemEstoque){
 
     const sql = `
         INSERT INTO estoque_alimentos (familia_id, alimento_id, quantidade, validade,custo_total, estado, local_armazenamento)
@@ -8,13 +8,12 @@ async function cadastrarEstoque(familyId, alimento_id, quantidade, validade, cus
     `
 
     const [result] = await db.execute(sql, [
-        familyId, 
-        alimento_id, 
-        quantidade, 
-        validade, 
-        custo_total, 
-        estado,
-        local_armazenamento
+        itemEstoque.familyId, 
+        itemEstoque.alimento_id, 
+        itemEstoque.quantidade, 
+        itemEstoque.dataCerta, 
+        itemEstoque.custo_total, 
+        itemEstoque.novoEstado
     ])
 
     return { id: result.insertId}

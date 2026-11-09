@@ -5,9 +5,7 @@ const familiaSchema = z.object({
 })
 
 const familiaUsuariosSchema = z.object({
-    familia_id: z.coerce.number().int("O id tem que ser inteiro").positive("O id tem que ser positivo"), 
-    usuario_id: z.coerce.number().int("O id tem que ser inteiro").positive("O id tem que ser positivo"),
-    papel: z.string().max(30, "O papel só pode ter até 30 caracteres")
+    codigo_convite: z.string().max(6, "O codigo de convite pode ter no máximo 6 digitos")
 })
 
 module.exports = {

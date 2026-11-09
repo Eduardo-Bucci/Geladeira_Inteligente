@@ -1,6 +1,7 @@
 const repository = require("../repository/userRepository.js")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+require('dotenv').config();
 
 async function cadastrarUsuarioService(nome, email, senha){
 
