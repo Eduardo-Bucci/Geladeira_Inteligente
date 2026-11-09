@@ -8,6 +8,7 @@ const { rotaFamilia } = require("./routes/familiaRoutes.js")
 const { rotaEstoque } = require("./routes/estoqueRoutes.js");
 const { rotaDashboard } = require("./routes/dashboardRoutes.js")
 const { rotaLista } = require("./routes/listaRoutes.js")
+const { rotaReceitas} = require("./routes/receitasRoutes.js")
 
 const { errorHandler } = require("./middlewares/gestorDeErro.js");
 
@@ -30,6 +31,7 @@ app.use(rotaFamilia)
 app.use(rotaEstoque)
 app.use(rotaDashboard)
 app.use(rotaLista)
+app.use(rotaReceitas)
 
 app.use(errorHandler)
 
