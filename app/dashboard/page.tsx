@@ -66,6 +66,13 @@ export default function DashboardPage() {
   const [data, setData] = useState('');
 
   const Router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      Router.replace("/login")
+    }
+  }, [Router])
   
   useEffect(() => {
     // Essa é a parte de atualizar a data atual, para mostrar na tela

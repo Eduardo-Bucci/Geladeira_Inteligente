@@ -42,18 +42,7 @@ export default function Estoque() {
   async function buscarEstoque(){
 
   
-  const token = localStorage.getItem("token");
-
-    if (!token) {
-      console.error("Token não encontrado!");
-      return;
-    }
-
-    const payload = JSON.parse(
-      atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
-    );
-
-    console.log(payload);
+    const token = localStorage.getItem("token");
 
     try {
       

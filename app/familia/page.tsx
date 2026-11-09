@@ -35,6 +35,10 @@ export default function FamiliaPage() {
     return token;
   }
 
+  async function dash(){
+    router.push("/dashboard");
+  }
+
   // Criar uma nova família
   async function criarFamilia(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -357,6 +361,7 @@ export default function FamiliaPage() {
             Os membros poderão compartilhar o controle do estoque e
             acompanhar os alimentos cadastrados pelo grupo.
           </p>
+          <button className="  mt-7 flex w-full items-center justify-center gap-2 rounded-xl border border-green-600 bg-white py-3 font-semibold text-green-700 transition hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-60" onClick={dash}>Já tem família?</button>
         </footer>
       </div>
     </main>

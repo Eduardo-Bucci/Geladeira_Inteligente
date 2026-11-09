@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Check, ListChecks, Plus, Trash2, X , ArrowLeft, Leaf } from "lucide-react";
 import {useRouter} from "next/navigation";
+import { useEffect } from "react";
 
 type ShoppingItem = {
   id: number;
@@ -53,6 +54,13 @@ export default function Compras() {
   }
 
   const completedShopping = shopping.filter((item) => item.checked).length;
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      Router.replace("/login")
+    }
+  }, [Router])
 
   return (
     <main className="flex flex-col h-screen items-center justify-center bg-linear-to-t from-green-200 to-green-50">

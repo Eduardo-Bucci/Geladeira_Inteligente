@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react"
 import { Search, CalendarDays, } from "lucide-react"
+import { useEffect } from "react";
+import { useRouter } from "next/router";
  
 type Movimentacao = {
   id: number;
@@ -69,6 +71,14 @@ export default function Relatorios() {
       year: "numeric",
     });
   }
+  const Router = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      Router.replace("/login")
+    }
+  }, [Router])
 
   return (
     <main className="min-h-screen w-full bg-green-50 p-4 md:p-8">

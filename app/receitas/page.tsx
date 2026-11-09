@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import {
   Bookmark, Check, ChefHat, Clock3, CookingPot, Search,
@@ -8,84 +8,27 @@ import {
   Bell, Leaf
 } from 'lucide-react';
 
-
-type Ingredient = { name: string; amount: string; available: boolean };
+// Ajustamos o tipo da receita para refletir as propriedades extras que seu SQL retorna
 type Recipe = {
-  id: number; title: string; category: string; time: number; difficulty: string;
-  servings: number; image: string; description: string; availableCount: number;
-  ingredients: Ingredient[]; steps: string[]; expiring?: boolean;
+  id: number;
+  title: string;
+  category: string;
+  time: number; // Caso o banco não traga, definimos um padrão no mapeamento
+  difficulty: string;
+  servings: number;
+  image: string;
+  description: string;
+  availableCount: number; // Agora mapeado com "ingredientes_que_eu_tenho"
+  totalIngredients: number; // Mapeado com "total_ingredientes_necessarios"
+  ingredients: { name: string; amount: string; available: boolean }[]; // Virá vazio ou tratado se houver outra rota
+  steps: string[]; // Mapeado a partir de "receita_preparo"
+  expiring?: boolean;
 };
-
-const initialRecipes: Recipe[] = [
-  {
-    id: 1, title: 'Omelete colorida', category: 'Rápidas', time: 15, difficulty: 'Fácil', servings: 2,
-    image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=85',
-    description: 'Uma refeição prática para aproveitar os ovos e os vegetais da geladeira.', availableCount: 5, expiring: true,
-    ingredients: [
-      { name: 'Ovos', amount: '3 unidades', available: true }, { name: 'Tomate', amount: '1 unidade', available: true },
-      { name: 'Queijo', amount: '50 g', available: true }, { name: 'Cebola', amount: '1/2 unidade', available: true },
-      { name: 'Cheiro-verde', amount: 'A gosto', available: true },
-    ],
-    steps: ['Bata os ovos em uma tigela e tempere a gosto.', 'Pique o tomate, a cebola e o cheiro-verde.', 'Misture os ingredientes aos ovos e acrescente o queijo.', 'Despeje em uma frigideira untada e cozinhe em fogo baixo até firmar.'],
-  },
-  {
-    id: 2, title: 'Macarrão ao molho caseiro', category: 'Almoço', time: 25, difficulty: 'Fácil', servings: 3,
-    image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=85',
-    description: 'Um clássico simples com molho de tomate feito em casa.', availableCount: 4,
-    ingredients: [
-      { name: 'Macarrão', amount: '250 g', available: true }, { name: 'Tomate', amount: '3 unidades', available: true },
-      { name: 'Alho', amount: '2 dentes', available: true }, { name: 'Cebola', amount: '1/2 unidade', available: true },
-      { name: 'Manjericão', amount: 'A gosto', available: false },
-    ],
-    steps: ['Cozinhe o macarrão conforme as instruções da embalagem.', 'Refogue o alho e a cebola picados com um fio de azeite.', 'Adicione os tomates picados e cozinhe até formar um molho.', 'Ajuste o tempero, misture o molho ao macarrão e finalize com manjericão, se tiver.'],
-  },
-  {
-    id: 3, title: 'Salada fresca da estação', category: 'Leves', time: 10, difficulty: 'Muito fácil', servings: 2,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85',
-    description: 'Uma combinação leve e crocante para acompanhar suas refeições.', availableCount: 3, expiring: true,
-    ingredients: [
-      { name: 'Alface', amount: '1/2 pé', available: true }, { name: 'Tomate', amount: '2 unidades', available: true },
-      { name: 'Cenoura', amount: '1 unidade', available: true }, { name: 'Limão', amount: '1 unidade', available: false },
-    ],
-    steps: ['Lave e higienize bem todos os vegetais.', 'Rasgue as folhas de alface e corte o tomate.', 'Rale a cenoura e misture tudo em uma tigela.', 'Tempere a gosto. Se não tiver limão, use o tempero disponível em casa.'],
-  },
-  {
-    id: 4, title: 'Panqueca de banana', category: 'Café da manhã', time: 12, difficulty: 'Fácil', servings: 2,
-    image: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=85',
-    description: 'Panquecas macias para começar o dia com poucos ingredientes.', availableCount: 3,
-    ingredients: [
-      { name: 'Banana', amount: '2 unidades', available: true }, { name: 'Ovos', amount: '2 unidades', available: true },
-      { name: 'Aveia', amount: '4 colheres', available: false }, { name: 'Canela', amount: 'A gosto', available: true },
-    ],
-    steps: ['Amasse as bananas com um garfo.', 'Misture com os ovos e a aveia, se disponível.', 'Coloque pequenas porções em uma frigideira antiaderente.', 'Doure dos dois lados e finalize com canela.'],
-  },
-  {
-    id: 5, title: 'Legumes salteados', category: 'Leves', time: 20, difficulty: 'Fácil', servings: 2,
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=85',
-    description: 'Uma maneira saborosa de aproveitar os legumes que já estão na geladeira.', availableCount: 4,
-    ingredients: [
-      { name: 'Cenoura', amount: '1 unidade', available: true }, { name: 'Brócolis', amount: '1 xícara', available: true },
-      { name: 'Abobrinha', amount: '1 unidade', available: true }, { name: 'Alho', amount: '2 dentes', available: true },
-      { name: 'Shoyu', amount: '1 colher', available: false },
-    ],
-    steps: ['Lave os legumes e corte em pedaços semelhantes.', 'Aqueça uma frigideira com um pouco de óleo ou azeite.', 'Refogue o alho e adicione os legumes mais firmes primeiro.', 'Salteie até ficarem macios, mas ainda crocantes, e tempere a gosto.'],
-  },
-  {
-    id: 6, title: 'Vitamina de banana', category: 'Café da manhã', time: 5, difficulty: 'Muito fácil', servings: 1,
-    image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=900&q=85',
-    description: 'Uma bebida rápida para aproveitar bananas maduras.', availableCount: 2, expiring: true,
-    ingredients: [
-      { name: 'Banana', amount: '1 unidade', available: true }, { name: 'Leite', amount: '200 ml', available: true },
-      { name: 'Aveia', amount: '1 colher', available: false },
-    ],
-    steps: ['Descasque a banana e corte em rodelas.', 'Coloque a banana e o leite no liquidificador.', 'Bata até ficar cremoso. Acrescente aveia se tiver disponível.'],
-  },
-];
 
 const categories = ['Todas', 'Rápidas', 'Almoço', 'Leves', 'Café da manhã'];
 
 export default function ReceitasPage() {
-  const [recipes] = useState(initialRecipes);
+  const [receita, setReceita] = useState<Recipe[]>([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todas');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
@@ -95,16 +38,6 @@ export default function ReceitasPage() {
   const [showPreparedMessage, setShowPreparedMessage] = useState(false);
 
   const Router = useRouter();
-
-  const filtered = useMemo(() => recipes.filter((recipe) => {
-    const matchesSearch = recipe.title.toLowerCase().includes(search.toLowerCase()) || recipe.ingredients.some((item) => item.name.toLowerCase().includes(search.toLowerCase()));
-    const matchesCategory = category === 'Todas' || recipe.category === category;
-    const matchesAvailable = !onlyAvailable || recipe.ingredients.every((item) => item.available);
-    return matchesSearch && matchesCategory && matchesAvailable;
-  }), [recipes, search, category, onlyAvailable]);
-
-  const toggleSaved = (id: number) => setSaved((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
-
   function paginaInicial() {
     Router.push("/");
   }
@@ -113,8 +46,85 @@ export default function ReceitasPage() {
     alert("Sem notificações no momento. Este é um protótipo.");
   }
 
+  async function verReceitas(){
+    const token = localStorage.getItem("token")
+
+    if (!token) {
+      console.error("Token não encontrado!");
+      Router.push("/login")
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/receitas", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar receitas");
+      }
+
+      const data = await response.json();
+      const backendRows = Array.isArray(data) ? data : data.data ?? [];
+
+      // 🔄 CONVERSÃO: Transforma o formato da sua Query SQL para o formato do Frontend
+      const receitasFormatadas: Recipe[] = backendRows.map((row: any) => {
+        // Trata as instruções do preparo caso venham como string ou JSON stringificado
+        let passos: string[] = [];
+        try {
+          passos = typeof row.receita_preparo === 'string' && row.receita_preparo.startsWith('[')
+            ? JSON.parse(row.receita_preparo)
+            : row.receita_preparo?.split('\n') || [];
+        } catch {
+          passos = [row.receita_preparo];
+        }
+
+        return {
+          id: row.receita_id,
+          title: row.receita_titulo,
+          description: row.receita_descricao,
+          difficulty: row.receita_dificuldade || 'Fácil',
+          category: row.receita_tipo || 'Geral',
+          steps: passos,
+          availableCount: row.ingredientes_que_eu_tenho ?? 0,
+          totalIngredients: row.total_ingredientes_necessarios ?? 0,
+          time: row.tempo_preparo || 20, // Padrão caso não exista na query
+          servings: row.porcoes || 2, // Padrão caso não exista na query
+          image: row.imagem_url || 'https://unsplash.com', // Imagem padrão de comida
+          ingredients: [] // Como a query atual agrupa os ingredientes em contadores, a lista detalhada inicia vazia
+        };
+      });
+
+      setReceita(receitasFormatadas);
+    } catch (error) {
+      console.error("Erro ao carregar receitas do backend:", error);
+    }
+  }
+
+  useEffect(() => {
+    verReceitas();
+  }, []);
+
+  // 🔄 Filtros adaptados para usar os dados vindos da Query SQL
+  const filtered = useMemo(() => {
+    return receita.filter((recipe) => {
+      // Busca pelo título ou pela descrição
+      const matchesSearch = recipe.title.toLowerCase().includes(search.toLowerCase()) || 
+                            recipe.description.toLowerCase().includes(search.toLowerCase());
+      
+      const matchesCategory = category === 'Todas' || recipe.category.toLowerCase() === category.toLowerCase();
+      
+      // Se "onlyAvailable" estiver ativo, só mostra se você tiver todos os ingredientes necessários
+      const matchesAvailable = !onlyAvailable || recipe.availableCount === recipe.totalIngredients;
+      
+      return matchesSearch && matchesCategory && matchesAvailable;
+    });
+  }, [receita, search, category, onlyAvailable]);
+
+  const toggleSaved = (id: number) => setSaved((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+
   return (
-    <main className="min-h-screen bg-linear-to-t from-green-200 to-green-50 text-[#20352b]">
+     <main className="min-h-screen bg-linear-to-t from-green-200 to-green-50 text-[#20352b]">
       <div className="mx-auto max-w-7xl px-5 py-7 sm:px-8 lg:px-10">
         <header className="mb-8 flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
             <div className="flex items-center gap-3">
@@ -142,7 +152,7 @@ export default function ReceitasPage() {
             <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">Sua próxima refeição começa na geladeira.</h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-white/75 sm:text-base">Encontre receitas práticas usando os ingredientes disponíveis em casa e dê prioridade aos alimentos que estão perto de vencer.</p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
-              <span className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2"><CookingPot size={16} /> {recipes.length} ideias para experimentar</span>
+              <span className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2"><CookingPot size={16} /> {receita.length} ideias para experimentar</span>
               <span className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2"><Leaf size={16} /> Menos desperdício</span>
             </div>
           </div>
@@ -150,8 +160,8 @@ export default function ReceitasPage() {
         </section>
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-[#e7ebe3] bg-white p-5"><div className="flex items-center justify-between"><span className="text-sm text-[#718076]">Receitas disponíveis</span><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#e8f4e7] text-[#36734b]"><Utensils size={18} /></span></div><p className="mt-3 text-3xl font-bold">{recipes.length.toString().padStart(2, '0')}</p><p className="mt-1 text-xs text-[#78877d]">Sugestões para sua despensa</p></div>
-          <div className="rounded-2xl border border-[#e7ebe3] bg-white p-5"><div className="flex items-center justify-between"><span className="text-sm text-[#718076]">Para fazer agora</span><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#fff0d8] text-[#a56b1d]"><Clock3 size={18} /></span></div><p className="mt-3 text-3xl font-bold">{recipes.filter((r) => r.time <= 15).length.toString().padStart(2, '0')}</p><p className="mt-1 text-xs text-[#78877d]">Prontas em até 15 minutos</p></div>
+          <div className="rounded-2xl border border-[#e7ebe3] bg-white p-5"><div className="flex items-center justify-between"><span className="text-sm text-[#718076]">Receitas disponíveis</span><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#e8f4e7] text-[#36734b]"><Utensils size={18} /></span></div><p className="mt-3 text-3xl font-bold">{receita.length.toString().padStart(2, '0')}</p><p className="mt-1 text-xs text-[#78877d]">Sugestões para sua despensa</p></div>
+          <div className="rounded-2xl border border-[#e7ebe3] bg-white p-5"><div className="flex items-center justify-between"><span className="text-sm text-[#718076]">Para fazer agora</span><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#fff0d8] text-[#a56b1d]"><Clock3 size={18} /></span></div><p className="mt-3 text-3xl font-bold">{1}</p><p className="mt-1 text-xs text-[#78877d]">Com sua despensa</p></div>
           <div className="rounded-2xl border border-[#e7ebe3] bg-white p-5"><div className="flex items-center justify-between"><span className="text-sm text-[#718076]">Salvas por você</span><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#f1eafa] text-[#7956a5]"><Bookmark size={18} /></span></div><p className="mt-3 text-3xl font-bold">{saved.length.toString().padStart(2, '0')}</p><p className="mt-1 text-xs text-[#78877d]">Suas receitas favoritas</p></div>
         </section>
 
@@ -166,11 +176,11 @@ export default function ReceitasPage() {
             <button onClick={() => setOnlyAvailable((v) => !v)} className={`inline-flex w-fit items-center gap-2 rounded-xl border px-3.5 py-2.5 text-sm font-semibold transition ${onlyAvailable ? 'border-[#438657] bg-[#e7f4e7] text-[#2c7144]' : 'border-[#e1e8de] bg-white text-[#637469]'}`}><SlidersHorizontal size={16} /> Só com tudo disponível <span className={`h-4 w-7 rounded-full p-0.5 ${onlyAvailable ? 'bg-[#438657]' : 'bg-[#cbd4ca]'}`}><span className={`block h-3 w-3 rounded-full bg-white transition-transform ${onlyAvailable ? 'translate-x-3' : ''}`} /></span></button>
           </div>
 
-          {recipes.some((recipe) => recipe.expiring) && <div className="mt-5 flex items-start gap-3 rounded-2xl border border-[#f0dfb8] bg-[#fff8e9] p-4"><span className="mt-0.5 text-[#b27a24]"><AlertCircle size={19} /></span><div><p className="text-sm font-bold text-[#76531e]">Aproveite antes que vençam</p><p className="mt-1 text-sm leading-5 text-[#8b7043]">Algumas sugestões usam alimentos que podem estar perto da validade. Confira seu estoque para escolher o que preparar primeiro.</p></div></div>}
+          {receita.some((recipe) => recipe.expiring) && <div className="mt-5 flex items-start gap-3 rounded-2xl border border-[#f0dfb8] bg-[#fff8e9] p-4"><span className="mt-0.5 text-[#b27a24]"><AlertCircle size={19} /></span><div><p className="text-sm font-bold text-[#76531e]">Aproveite antes que vençam</p><p className="mt-1 text-sm leading-5 text-[#8b7043]">Algumas sugestões usam alimentos que podem estar perto da validade. Confira seu estoque para escolher o que preparar primeiro.</p></div></div>}
 
           {filtered.length > 0 ? <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{filtered.map((recipe) => {
-            const available = recipe.ingredients.filter((item) => item.available).length;
-            const missing = recipe.ingredients.length - available;
+            const available = recipe.availableCount;
+            const missing = recipe.totalIngredients - available;
             const isSaved = saved.includes(recipe.id);
             return <article key={recipe.id} className="group overflow-hidden rounded-3xl border border-[#e5eae2] bg-white transition duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#254c32]/[0.07]">
               <div className="relative h-48 overflow-hidden bg-[#e8eee5]"><img src={recipe.image} alt={recipe.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-[#315e40] shadow-sm">{recipe.category}</div><button aria-label={isSaved ? 'Remover dos favoritos' : 'Salvar receita'} onClick={() => toggleSaved(recipe.id)} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full shadow-sm backdrop-blur transition ${isSaved ? 'bg-[#285c40] text-white' : 'bg-white/95 text-[#476052] hover:bg-white'}`}><Bookmark size={17} fill={isSaved ? 'currentColor' : 'none'} /></button>{recipe.expiring && <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-[#fff3d7] px-3 py-1.5 text-xs font-bold text-[#95631d]"><Leaf size={13} /> Ajuda a evitar desperdício</div>}</div>
