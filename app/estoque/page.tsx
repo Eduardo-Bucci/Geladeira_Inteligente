@@ -7,11 +7,14 @@ import Swal from "sweetalert2"
 
 type Alimento = {
   id: number;
+  alimento_id: number;
   nome: string;
+  unidade: string;
   validade: string;
-  quantidade: string;
-  custo_total: string;
+  quantidade: number;
+  custo_total: number;
   estado: string;
+  local_armazenamento: string;
 };
 
 export default function Estoque() {
@@ -38,8 +41,27 @@ export default function Estoque() {
 
   async function buscarEstoque(){
 
+  
+  const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("Token não encontrado!");
+      return;
+    }
+
+    const payload = JSON.parse(
+      atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+    );
+
+    console.log(payload);
+
     try {
-      const response = await fetch("http://localhost:3001/estoque")
+      
+      const response = await fetch("http://localhost:3001/estoque", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
 
       if(!response.ok){
         const erro = await response.text()
@@ -51,13 +73,13 @@ export default function Estoque() {
       
       setAlimentos(Array.isArray (data) ? data : data.data ?? [])
     } catch (error) {
-      console.error("Erro ao buscar usuário ", error)
+      console.error("Erro ao buscar estoque ", error)
 
       await Swal.fire({
               title: "Erro",
-              text: "Não foi possível carregar o estoque. Confira se o servidor está ligado e se a rota GET /usuarios existe.",
+              text: "Não foi possível carregar o estoque. Confira se o servidor está ligado e se a rota GET /estoque existe.",
               icon: "error",
-              confirmButtonText: "Ok",
+              confirmButtonText: "OK",
             });
     }
   }
@@ -84,7 +106,7 @@ export default function Estoque() {
         .includes(pesquisa.toLowerCase());
 
      const correspondeLocal =
-        filtro === "Todos" || alimento.estado === filtro;
+          filtro === "Todos" || alimento.local_armazenamento === filtro;
 
       return correspondeNome && correspondeLocal;
     });
@@ -166,11 +188,11 @@ export default function Estoque() {
       });
 
     }catch(error){
-      console.error("Erro ao excluir usuário:", error);
+      console.error("Erro ao excluir alimento:", error);
       
       await Swal.fire({
         title: "Erro",
-        text: "Não foi possível excluir o usuário. Confira se a rota DELETE /estoque/:id existe.",
+        text: "Não foi possível excluir o alimento. Confira se a rota DELETE /estoque/:id existe.",
         icon: "error",
         confirmButtonText: "Ok",
       });

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { ArrowLeft } from "lucide-react";
 
 interface Usuario {
   id: number;
@@ -170,41 +171,51 @@ export default function Admin() {
   function adminPage(){
     return (
       <main className="min-h-screen bg-linear-to-t from-green-200 to-green-100 p-8 text-black">
-        <div className="mx-auto max-w-6xl">
-          <h1 className="mb-6 text-3xl font-bold">
-            Gerenciar Usuários
-          </h1>
 
-          {buscando ? (
-            <p className="text-gray-300">Carregando usuários...</p>
-          ) : usuarios.length === 0 ? (
-            <div className="rounded-lg bg-green-700 p-8 text-center shadow">
-              <p className="text-gray-400">
-                Nenhum usuário cadastrado
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {usuarios.map((usuario) => (
-                <div
-                  key={usuario.id}
-                  className="rounded-lg border border-green-700 bg-green-300 p-4 shadow hover:scale-105 transition-transform hover:shadow-lg"
-                >
-                  <h2 className="text-xl font-bold text-black">{usuario.nome}</h2>
+        <section className="max-w-6xl mx-auto mb-8 flex items-center justify-center gap-4">
+          <a href="/login" className="inline-flex items-center gap-2 rounded-full border border-[#e2e8df] bg-white px-4 py-2.5 text-sm font-semibold text-[#466052] transition hover:bg-[#f0f5ed] absolute top-7 left-10">
+            <ArrowLeft size={17} /> Voltar ao login
+          </a>
+          <h1 className="mb-6 text-3xl font-extrabold text-center">Bem vindo, Admininastror!</h1>
+        </section>
 
-                  <p className="mt-3 text-black">{usuario.email}</p>
+        <section>
+          <div className="mx-auto max-w-6xl">
+            <h1 className="mb-6 text-3xl font-bold">
+              Gerenciar Usuários
+            </h1>
 
-                  <button
-                    className="mt-4 w-full rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
-                    onClick={() => excluirUsuario(usuario.id)}
+            {buscando ? (
+              <p className="text-gray-300">Carregando usuários...</p>
+            ) : usuarios.length === 0 ? (
+              <div className="rounded-lg bg-green-700 p-8 text-center shadow">
+                <p className="text-gray-400">
+                  Nenhum usuário cadastrado
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {usuarios.map((usuario) => (
+                  <div
+                    key={usuario.id}
+                    className="rounded-lg border border-green-700 bg-green-300 p-4 shadow hover:scale-105 transition-transform hover:shadow-lg"
                   >
-                    Excluir
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                    <h2 className="text-xl font-bold text-black">{usuario.nome}</h2>
+
+                    <p className="mt-3 text-black">{usuario.email}</p>
+
+                    <button
+                      className="mt-4 w-full rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700"
+                      onClick={() => excluirUsuario(usuario.id)}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
       </main>
     );
   }

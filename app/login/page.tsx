@@ -27,6 +27,7 @@ export default function Login() {
      }),
     });
 
+      const resultado = await response.json();
 
       if(response.ok){
 
@@ -48,8 +49,10 @@ export default function Login() {
                 icon:"success",
                 confirmButtonText: "OK"
               })
-               Router.push("/dashboard");
-               
+                
+              localStorage.setItem('token', resultado.token);
+
+              Router.push("/dashboard");              
                
             }
       }
