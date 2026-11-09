@@ -50,9 +50,13 @@ export default function Login() {
                 confirmButtonText: "OK"
               })
                 
-              localStorage.setItem('token', resultado.token);
+              localStorage.setItem("token", resultado.token);
 
-              Router.push("/dashboard");              
+              if (resultado.usuario.familyId) {
+                Router.push("/dashboard");
+              } else {
+                Router.push("/familia");
+              }          
                
             }
       }
