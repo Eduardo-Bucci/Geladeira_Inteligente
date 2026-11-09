@@ -42,7 +42,7 @@ async function LoginUsuarioService(email, senha){
 
     return {
         mensagem: "Login realizado com sucesso!",
-        usuario: { id: login.id, nome: login.nome, email: login.email},
+        usuario: { id: login.id, nome: login.nome, email: login.email, family_Id: familyId },
         token: token
     }
 }

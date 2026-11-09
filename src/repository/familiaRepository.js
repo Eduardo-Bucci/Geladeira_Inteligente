@@ -14,6 +14,12 @@ async function cadastrarFamilia(nome, codigo_convite){
 
 async function cadastrarUsuarioFamilia(familyId, userId, papel){
 
+    console.log({
+    familyId,
+    userId,
+    papel
+    });
+
     const sql = `
         INSERT INTO familia_usuarios (familia_id, usuario_id, papel)
         VALUES (?, ?, ?)
@@ -25,7 +31,11 @@ async function cadastrarUsuarioFamilia(familyId, userId, papel){
         papel
     ])
 
-    return { userID: result.familia_id}
+    return {
+    familyId,
+    userId,
+    papel
+};
 }
 
 async function vereficarMembro(userId, familyId){
