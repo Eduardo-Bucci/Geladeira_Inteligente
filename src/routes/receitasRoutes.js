@@ -6,6 +6,8 @@ const rotaReceitas = Router()
 
 rotaReceitas.post("/receitas/sincronizar", authMiddleware, controller.sincronizarReceitas)
 
+rotaReceitas.get("/receitas", authMiddleware, requireFamily, controller.listarReceitasEstoque)
+
 module.exports = {
     rotaReceitas
 }

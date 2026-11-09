@@ -6,7 +6,7 @@ const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function importarReceitasRecipe(){
     try {
-    const response = await fetch("https://recipeapi.io/api/v1/recipes?per_page=5&cuisine=brazilian",
+    const response = await fetch("https://recipeapi.io/api/v1/recipes?per_page=5&cuisine=german",
     {headers: {"Authorization": `Bearer ${process.env.RECIPEAPI_KEY}`}}
     );
 
@@ -20,17 +20,23 @@ async function importarReceitasRecipe(){
 
         console.log(`-> Traduzindo receita: ${receitaCru.name}`);
 
-        await esperar(1000);
+        await esperar(1500)
+        const nomePt = await traduzir(receitaCru.name)
+
+        await esperar(1500);
         const descricaoPt = await traduzir(receitaCru.description)
 
-        await esperar(1000);
+        await esperar(1500);
         const instrucoesPt = await traduzir(receitaCru.instructions.join("\n"))
 
+        await esperar(1500);
+        const tipo_refeicaoPt = await traduzir(receitaCru.meal_type)
+
         const dadosReceita = {
-            nome: receitaCru.name,
+            nome: nomePt,
             descricao: descricaoPt,
             dificuldade: receitaCru.difficulty,
-            tipo_refeicao: receitaCru.meal_type,
+            tipo_refeicao: tipo_refeicaoPt,
             instrucoes: instrucoesPt
         }
 
@@ -38,7 +44,7 @@ async function importarReceitasRecipe(){
 
         for(const ingredienteCru of receitaCru.ingredients){    
 
-            await esperar(1000);
+            await esperar(1500);
             const nomeIngredientePt = await traduzir(ingredienteCru.name || ingredienteCru)
             const nomeIngrediente = nomeIngredientePt.toLowerCase().trim()
 
@@ -68,6 +74,11 @@ async function importarReceitasRecipe(){
     }
 }
 
+async function verReceitas(familyId){
+    return await repository.buscarReceitasCompativeis(familyId)
+}
+
 module.exports = {
-    importarReceitasRecipe
+    importarReceitasRecipe,
+    verReceitas
 }
